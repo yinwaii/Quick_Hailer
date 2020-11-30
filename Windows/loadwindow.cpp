@@ -9,6 +9,7 @@ LoadWindow::LoadWindow(QWidget *parent) : QWidget(parent), ui(new Ui::LoadWindow
     connect(&DataBase::dataBase, &DataBase::statusProgress, this, &LoadWindow::statusProgress);
     ui->labelStatus->setHidden(true);
     ui->progressBar->setHidden(true);
+    ui->boxDataSet->addItem("/Users/yinwai/Downloads/Dataset-CS241-2020-2");
 }
 
 LoadWindow::~LoadWindow()
@@ -102,7 +103,7 @@ void LoadWindow::on_boxDataSet_currentIndexChanged(const QString &arg1)
         if (checkDates.contains(date))
             continue;
         checkDates[date] = new QCheckBox(date, this);
-        checkDates[date]->setChecked(true);
+        checkDates[date]->setChecked(false);
         layoutDates.addWidget(checkDates[date]);
     }
     ui->groupDate->setLayout(&layoutDates);
@@ -126,7 +127,7 @@ void LoadWindow::on_buttonLoad_clicked()
         DataBase::dataBase.init();
         DataBase::dataBase.load();
     });
-    connect(dataBaseInsert, &QThread::finished, this, &LoadWindow::on_insert_finished);
+    connect(dataBaseInsert, &QThread::finished, this, &LoadWindow::insert_finished);
     dataBaseInsert->start();
 }
 
@@ -147,7 +148,7 @@ void LoadWindow::statusProgress(int progress)
         ui->progressBar->setHidden(true);
 }
 
-void LoadWindow::on_insert_finished()
+void LoadWindow::insert_finished()
 {
     qDebug() << "Setting the boxDataSet ...";
     ui->boxDataSet->insertItem(0, ui->boxDataSet->currentText());

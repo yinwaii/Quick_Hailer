@@ -7,7 +7,7 @@ void DataBase::init()
 {
     emit statusText("Creating the database ...");
     db = QSqlDatabase::addDatabase("QSQLITE", "ride_hailing_data");
-    db.setDatabaseName(QApplication::applicationFilePath() + "database.db");
+    db.setDatabaseName(QApplication::applicationFilePath() + ".db");
     emit statusText("Opening the database ...");
     if (!db.open()) {
         QMessageBox::warning(nullptr, "warning", "Can't create the database! ");
@@ -21,7 +21,7 @@ void DataBase::init()
         return;
     }
     emit statusText("Creating the dataset table ...");
-    if (!query.exec("CREATE TABLE dataset (order_id TEXT, departure_time FLOAT, end_time FLOAT, "
+    if (!query.exec("CREATE TABLE dataset (order_id TEXT, departure_time INT, end_time INT, "
                     "orig_lng FLOAT, "
                     "orig_lat FLOAT, dest_lng FLOAT, dest_lat FLOAT, fee FLOAT)")) {
         QMessageBox::warning(nullptr, "error", "fail to create the table");
@@ -111,11 +111,12 @@ void DataBase::load()
             QStringList dataLine = dataStream.readLine().simplified().split(',');
             //            emit statusProgress(dataStream.pos() * 100 / dataFile.size());
             //            qDebug() << dataStream.pos() << dataFile.size();
-            foreach (QString field, dataLine) {
+            foreach (QString field, dataIndex) {
                 if (field != "order_id")
                     query.bindValue(":" + field, dataLine[dataIndexMap[field]]);
                 else
                     query.bindValue(":" + field, "\'" + dataLine[dataIndexMap[field]] + "\'");
+                //                qDebug() << field << dataLine[dataIndexMap[field]];
             }
             if (!query.exec()) {
                 QMessageBox::warning(nullptr, "error", "can't load the data\n" + insertSql);
@@ -129,4 +130,29 @@ void DataBase::load()
     emit statusProgress(0);
     db.close();
     //    QMessageBox::information(nullptr, "success", "load already success!");
+}
+
+int DataBase::searchNum(QString command)
+{
+    emit statusText("Opening the database ...");
+    if (!db.open()) {
+        QMessageBox::warning(nullptr, "warning", "Can't create the database! ");
+        return -1;
+    }
+    qDebug() << command;
+    QSqlQuery query(command, db);
+    query.exec();
+    int result = 0;
+    //    int result = query.size();
+    //    int fee = query.record().indexOf("fee");
+    while (query.next()) {
+        result++;
+    }
+    db.close();
+    return result;
+}
+
+DataBase::~DataBase()
+{
+    db.removeDatabase("ride_hailing_data");
 }

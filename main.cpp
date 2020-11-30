@@ -1,6 +1,6 @@
-#include "globaldata.h"
-#include "loadwindow.h"
-#include "mainwindow.h"
+#include "Utilities/globaldata.h"
+#include "Windows/loadwindow.h"
+#include "Windows/mainwindow.h"
 
 #include <QApplication>
 

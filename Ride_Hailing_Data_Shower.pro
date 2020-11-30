@@ -16,21 +16,39 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    database.cpp \
-    globaldata.cpp \
-    loadwindow.cpp \
     main.cpp \
-    mainwindow.cpp
+    Utilities/database.cpp \
+    Utilities/globaldata.cpp \
+    Windows/loadwindow.cpp \
+    Windows/mainwindow.cpp \
+    Tabs/datatab.cpp \
+    Tabs/maptab.cpp \
+    Tabs/predictiontab.cpp \
+    Tabs/querytab.cpp \
+    Managers/axismanager.cpp \
+    Managers/chartmanager.cpp \
+    Managers/seriesmanager.cpp
 
 HEADERS += \
-    database.h \
-    globaldata.h \
-    loadwindow.h \
-    mainwindow.h
+    Utilities/database.h \
+    Utilities/globaldata.h \
+    Windows/loadwindow.h \
+    Windows/mainwindow.h \
+    Tabs/datatab.h \
+    Tabs/maptab.h \
+    Tabs/predictiontab.h \
+    Tabs/querytab.h \
+    Managers/axismanager.h \
+    Managers/chartmanager.h \
+    Managers/seriesmanager.h
 
 FORMS += \
-    loadwindow.ui \
-    mainwindow.ui
+    Windows/loadwindow.ui \
+    Windows/mainwindow.ui \
+    Tabs/datatab.ui \
+    Tabs/maptab.ui \
+    Tabs/predictiontab.ui \
+    Tabs/querytab.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

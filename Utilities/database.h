@@ -9,6 +9,7 @@
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
+#include <QSqlRecord>
 #include <QTextStream>
 
 class DataBase : public QObject
@@ -22,6 +23,8 @@ public:
     explicit DataBase(QObject *parent = nullptr);
     void init();
     void load();
+    int searchNum(QString command);
+    ~DataBase();
 
 signals:
     void statusText(QString status);

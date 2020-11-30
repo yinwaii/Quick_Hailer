@@ -1,8 +1,9 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "database.h"
-#include "globaldata.h"
+#include "Managers/seriesmanager.h"
+#include "Utilities/database.h"
+#include "Utilities/globaldata.h"
 #include <QMainWindow>
 #include <QMessageBox>
 
@@ -17,7 +18,6 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-public slots:
     void open_the_mainWindow();
 
 private:

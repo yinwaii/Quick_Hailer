@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>DataTab</class>
+ <widget class="QWidget" name="DataTab">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>603</width>
+    <height>445</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QHBoxLayout" name="layoutDataConfig">
+     <item>
+      <widget class="QLabel" name="labelDataTimeFrom">
+       <property name="text">
+        <string>From</string>
+       </property>
+       <property name="buddy">
+        <cstring>editDataTimeFrom</cstring>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDateTimeEdit" name="editDataTimeFrom">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="dateTime">
+        <datetime>
+         <hour>0</hour>
+         <minute>0</minute>
+         <second>0</second>
+         <year>2016</year>
+         <month>11</month>
+         <day>1</day>
+        </datetime>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="spacerData1">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Preferred</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QLabel" name="labelDataTimeTo">
+       <property name="text">
+        <string>To</string>
+       </property>
+       <property name="buddy">
+        <cstring>editDataTimeTo</cstring>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDateTimeEdit" name="editDataTimeTo">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="dateTime">
+        <datetime>
+         <hour>23</hour>
+         <minute>59</minute>
+         <second>59</second>
+         <year>2016</year>
+         <month>11</month>
+         <day>1</day>
+        </datetime>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="spacerData2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Preferred</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QLabel" name="labelDataStep">
+       <property name="text">
+        <string>Step</string>
+       </property>
+       <property name="buddy">
+        <cstring>spinDataStep</cstring>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="spinDataStep">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="value">
+        <number>10</number>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QTabWidget" name="widgetData">
+     <property name="styleSheet">
+      <string notr="true">QTabWidget::tab-bar { alignment: center; } </string>
+     </property>
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="tabDemand">
+      <attribute name="title">
+       <string>Demand Pattern</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_5">
+       <item row="0" column="2">
+        <layout class="QGridLayout" name="containerDemandTime"/>
+       </item>
+       <item row="0" column="1">
+        <widget class="Line" name="lineDemand">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <layout class="QGridLayout" name="containerDemandSpace"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabDistribution">
+      <attribute name="title">
+       <string>Distribution</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_4">
+       <item row="0" column="0">
+        <widget class="QWidget" name="plotDistribution" native="true">
+         <layout class="QGridLayout" name="gridLayout_3"/>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabRevenue">
+      <attribute name="title">
+       <string>Revenue</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_7">
+       <item row="0" column="0">
+        <widget class="QWidget" name="plotRevenue" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_6"/>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="layoutDataTimeLine">
+     <item>
+      <widget class="QLabel" name="textDataTimeLine">
+       <property name="text">
+        <string>TimeLine</string>
+       </property>
+       <property name="buddy">
+        <cstring>sliderDataTimeLine</cstring>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSlider" name="sliderDataTimeLine">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>editDataTimeTo</sender>
+   <signal>editingFinished()</signal>
+   <receiver>DataTab</receiver>
+   <slot>updatePlots()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>277</x>
+     <y>26</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>400</x>
+     <y>3</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>editDataTimeFrom</sender>
+   <signal>editingFinished()</signal>
+   <receiver>DataTab</receiver>
+   <slot>updatePlots()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>153</x>
+     <y>17</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>200</x>
+     <y>2</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spinDataStep</sender>
+   <signal>editingFinished()</signal>
+   <receiver>DataTab</receiver>
+   <slot>updatePlots()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>577</x>
+     <y>24</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>599</x>
+     <y>41</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>updatePlots()</slot>
+ </slots>
+</ui>

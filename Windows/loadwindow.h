@@ -1,8 +1,8 @@
 #ifndef LOADWINDOW_H
 #define LOADWINDOW_H
 
-#include "database.h"
-#include "globaldata.h"
+#include "Utilities/database.h"
+#include "Utilities/globaldata.h"
 #include <QCheckBox>
 #include <QDebug>
 #include <QFileDialog>
@@ -34,7 +34,7 @@ private slots:
     void on_boxDataSet_currentIndexChanged(const QString &arg1);
 
     void on_buttonLoad_clicked();
-    void on_insert_finished();
+    void insert_finished();
 public slots:
     void statusText(QString status);
     void statusProgress(int progress);

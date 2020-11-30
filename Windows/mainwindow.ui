@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>962</width>
+    <height>624</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QTabWidget" name="widgetMain">
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="autoFillBackground">
+       <bool>false</bool>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QTabWidget::tab-bar { alignment: center; } </string>
+      </property>
+      <property name="currentIndex">
+       <number>1</number>
+      </property>
+      <widget class="DataTab" name="tabData">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <attribute name="title">
+        <string>Data Visualization</string>
+       </attribute>
+      </widget>
+      <widget class="MapTab" name="tabMap">
+       <attribute name="title">
+        <string>Map Analysis</string>
+       </attribute>
+      </widget>
+      <widget class="PredictionTab" name="tabPrediction">
+       <attribute name="title">
+        <string>Prediction Analysis</string>
+       </attribute>
+      </widget>
+      <widget class="QueryTab" name="tabQuery">
+       <attribute name="title">
+        <string>Query Analysis</string>
+       </attribute>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>962</width>
+     <height>22</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>DataTab</class>
+   <extends>QWidget</extends>
+   <header>Tabs/datatab.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>PredictionTab</class>
+   <extends>QWidget</extends>
+   <header>Tabs/predictiontab.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>MapTab</class>
+   <extends>QWidget</extends>
+   <header>Tabs/maptab.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QueryTab</class>
+   <extends>QWidget</extends>
+   <header>Tabs/querytab.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

@@ -13,5 +13,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::open_the_mainWindow()
 {
+    SeriesManager sm;
     this->show();
+    ui->tabData->printDemandTime();
 }
