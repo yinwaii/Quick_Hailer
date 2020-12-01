@@ -26,6 +26,8 @@ public:
         series->reset(seriesConfig.idField, seriesConfig.recodeFields);
         series->setType(seriesConfig.typeConfig);
     }
+    inline AxisManager *getAxisX() { return axisX; }
+    inline AxisManager *getAxisY() { return axisY; }
     ~ChartManager();
 signals:
 private:

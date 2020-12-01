@@ -25,6 +25,7 @@ void ChartManager::load()
     series->reset(seriesConfig.idField, seriesConfig.recodeFields);
     series->setType(seriesConfig.typeConfig);
     series->loadRecodes();
+
     //    foreach (QList<QPointF> dat, data) {
     //        //        qDebug() << dat;
     //        QXYSeries *series;
@@ -45,6 +46,10 @@ void ChartManager::load()
     //        series->replace(dat);
     //        serieses.push_back(series);
     //    }
+    //    axisY->setRange(series->getBound(series->fieldList()[0]));
+    //    axisX->loadRange();
+    //    foreach (QPointF p, series->getSeries(series->fieldList()[0])->points())
+    //        qDebug() << QDateTime::fromTime_t(p.x());
     chart = new QChart;
     axisX->addAxis(chart);
     axisY->addAxis(chart);

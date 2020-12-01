@@ -15,22 +15,33 @@ DataTab::~DataTab()
 void DataTab::printDemandTime()
 {
     chartDemandTime = new ChartManager(ui->containerDemandTime);
-    chartDemandTime->initSeries("DateTime", {"Number"});
-    QList<QPointF> pointsDemandTime;
+    chartDemandTime->initSeries("DateTime", {"Entry", "Exit", "Flow"});
+    //    QList<QPointF> pointsDemandTime;
     int timeStart = ui->editDataTimeFrom->dateTime().toTime_t();
     int timeStop = ui->editDataTimeTo->dateTime().toTime_t();
     //    DataBase::dataBase.searchNum("SELECT * FROM dataset");
     for (int step = 0; step < ui->spinDataStep->value(); step++) {
         int stepStart = timeStart + (timeStop - timeStart) * step / ui->spinDataStep->value();
         int stepStop = timeStart + (timeStop - timeStart) * (step + 1) / ui->spinDataStep->value();
-        int result = DataBase::dataBase.searchNum(
-            QString("SELECT * FROM dataset WHERE departure_time>%1 AND end_time<%2")
+        int entry = DataBase::dataBase.searchNum(
+            QString("SELECT * FROM dataset WHERE departure_time>%1 AND departure_time<%2")
                 .arg(stepStart)
                 .arg(stepStop));
-        chartDemandTime->getSeries()->addCache(stepStart / 2.0 + stepStop / 2.0, {double(result)});
+        int exit = DataBase::dataBase.searchNum(
+            QString("SELECT * FROM dataset WHERE end_time>%1 AND end_time<%2")
+                .arg(stepStart)
+                .arg(stepStop));
+        int flow = entry - exit;
+        //        qDebug() << double(stepStop - stepStart) << double(entry) / double(stepStop - stepStart);
+        chartDemandTime->getSeries()->addCache((stepStart / 2.0 + stepStop / 2.0) * 1000,
+                                               {double(entry) * 3600 / (stepStop - stepStart),
+                                                double(exit) * 3600 / (stepStop - stepStart),
+                                                double(flow) * 3600 / (stepStop - stepStart)});
 
         //        pointsDemandTime.append(QPointF(stepStart / 2.0 + stepStop / 2.0, result));
     }
+    //    chartDemandTime->getAxisX()->setRange(ui->editDataTimeFrom->dateTime().toTime_t(),
+    //                                          ui->editDataTimeTo->dateTime().toTime_t());
     chartDemandTime->load();
 }
 

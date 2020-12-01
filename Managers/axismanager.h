@@ -18,8 +18,9 @@ public:
     virtual void setLabelsAngle(int angle) = 0;
     virtual void addAxis(QChart *chart) = 0;
     virtual void attachSeries(QXYSeries *series) = 0;
-    virtual void setRange(QPair<double, double> minmax) = 0;
-    virtual void setRange(double min, double max) = 0;
+    inline void setRange(QPair<double, double> minmax) { bound = minmax; }
+    inline void setRange(double min, double max) { bound = qMakePair(min, max); }
+    virtual void loadRange() = 0;
     inline void setAlignment(Qt::Alignment alignment) { align = alignment; }
     void loadConfig();
     inline void loadConfig(const QMap<AxisConfigItem, QVariant> internal_config)
@@ -33,6 +34,7 @@ public:
 protected:
     static void init();
     Qt::Alignment align;
+    QPair<double, double> bound;
     QMap<AxisConfigItem, QVariant> config;
 
 signals:
@@ -54,14 +56,10 @@ public:
     inline void setLabelsAngle(int angle) override { axis->setLabelsAngle(angle); }
     inline void addAxis(QChart *chart) override { chart->addAxis(axis, align); }
     inline void attachSeries(QXYSeries *series) override { series->attachAxis(axis); }
-    inline void setRange(QPair<double, double> minmax) override
+    inline void loadRange() override
     {
-        axis->setRange(QDateTime::fromTime_t(int(minmax.first)),
-                       QDateTime::fromTime_t(int(minmax.second)));
-    }
-    inline void setRange(double min, double max) override
-    {
-        axis->setRange(QDateTime::fromTime_t(int(min)), QDateTime::fromTime_t(int(max)));
+        axis->setRange(QDateTime::fromTime_t(int(bound.first)),
+                       QDateTime::fromTime_t(int(bound.second)));
     }
     ~DateTimeAxisManager() { delete axis; }
 };
@@ -82,11 +80,7 @@ public:
     inline void setLabelsAngle(int angle) override { axis->setLabelsAngle(angle); }
     inline void addAxis(QChart *chart) override { chart->addAxis(axis, align); }
     inline void attachSeries(QXYSeries *series) override { series->attachAxis(axis); }
-    inline void setRange(QPair<double, double> minmax) override
-    {
-        axis->setRange(minmax.first, minmax.second);
-    }
-    inline void setRange(double min, double max) override { axis->setRange(min, max); }
+    inline void loadRange() override { axis->setRange(bound.first, bound.second); }
     ~ValueAxisManager() { delete axis; }
 };
 
