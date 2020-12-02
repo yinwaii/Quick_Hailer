@@ -16,6 +16,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    Managers/mapmanager.cpp \
     main.cpp \
     Utilities/database.cpp \
     Utilities/globaldata.cpp \
@@ -30,6 +31,7 @@ SOURCES += \
     Managers/seriesmanager.cpp
 
 HEADERS += \
+    Managers/mapmanager.h \
     Utilities/database.h \
     Utilities/globaldata.h \
     Windows/loadwindow.h \

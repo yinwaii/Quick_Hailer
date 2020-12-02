@@ -8,6 +8,8 @@ MapTab::MapTab(QWidget *parent) :
     ui->setupUi(this);
 }
 
+void MapTab::loadMap() {}
+
 MapTab::~MapTab()
 {
     delete ui;

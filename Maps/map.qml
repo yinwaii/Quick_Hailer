@@ -1,7 +1,7 @@
 import QtQuick 2.0
 import QtLocation 5.6
 import QtPositioning 5.6
-Item {
+Rectangle {
     width: 512
     height: 512
     visible: true
@@ -19,8 +19,8 @@ Item {
     Map {
         anchors.fill: parent
         plugin: mapPlugin
-        center: Position.coordinate
-//        center: QtPositioning.coordinate(59.91, 10.75) // Oslo
+//        center: Position.coordinate
+        center: QtPositioning.coordinate(30.67, 104.05) // Oslo
         zoomLevel: 14
     }
 }

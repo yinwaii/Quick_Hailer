@@ -23,6 +23,8 @@ public:
     explicit DataBase(QObject *parent = nullptr);
     void init();
     void load();
+    void loadGrids();
+    QList<QRectF> getGrid();
     int searchNum(QString command);
     QList<QVariant> search(QString command);
     QVariant searchTarget(QString command);

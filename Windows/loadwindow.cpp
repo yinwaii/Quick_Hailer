@@ -123,9 +123,20 @@ void LoadWindow::on_buttonLoad_clicked()
     GlobalData::globalData.conf_set("DataPath", ui->boxDataSet->currentText());
     GlobalData::globalData.conf_set("Fields", listFields);
     GlobalData::globalData.conf_set("Dates", listDates);
+    GlobalData::globalData.conf_set("Grids",
+                                    QStringList{"grid_id",
+                                                "vertex0_lat",
+                                                "vertex0_lng",
+                                                "vertex1_lat",
+                                                "vertex1_lng",
+                                                "vertex2_lat",
+                                                "vertex2_lng",
+                                                "vertex3_lat",
+                                                "vertex3_lng"});
     QThread *dataBaseInsert = QThread::create([] {
         DataBase::dataBase.init();
         DataBase::dataBase.load();
+        DataBase::dataBase.loadGrids();
     });
     connect(dataBaseInsert, &QThread::finished, this, &LoadWindow::insert_finished);
     dataBaseInsert->start();

@@ -10,49 +10,61 @@ void DataBase::init()
     db.setDatabaseName(QApplication::applicationFilePath() + ".db");
     emit statusText("Opening the database ...");
     if (!db.open()) {
-        QMessageBox::warning(nullptr, "warning", "Can't create the database! ");
-        return;
+        qDebug() << "Can't create the database! ";
+        assert(0);
     }
     QSqlQuery query(db);
     emit statusText("Clearing the previous table ...");
     if (!query.exec("DROP TABLE IF EXISTS dataset")) {
-        QMessageBox::warning(nullptr, "error", "fail to clear the previous table");
+        qDebug() << "fail to clear the previous table";
         qDebug() << query.lastError().text();
-        return;
+        assert(0);
+    }
+    if (!query.exec("DROP TABLE IF EXISTS grid")) {
+        qDebug() << "fail to clear the previous table";
+        qDebug() << query.lastError().text();
+        assert(0);
     }
     emit statusText("Creating the dataset table ...");
     if (!query.exec("CREATE TABLE dataset (order_id TEXT, departure_time INT, end_time INT, "
                     "orig_lng FLOAT, "
                     "orig_lat FLOAT, dest_lng FLOAT, dest_lat FLOAT, fee FLOAT, time INT)")) {
-        QMessageBox::warning(nullptr, "error", "fail to create the table");
+        qDebug() << "fail to create the table";
         qDebug() << query.lastError().text();
-        return;
+        assert(0);
+    }
+    if (!query.exec("CREATE TABLE grid (grid_id INT, vertex0_lat FLOAT, vertex0_lng FLOAT, "
+                    "vertex1_lat FLOAT, vertex1_lng FLOAT, vertex2_lat FLOAT, vertex2_lng FLOAT, "
+                    "vertex3_lat FLOAT, vertex3_lng FLOAT)")) {
+        qDebug() << "fail to create the table";
+        qDebug() << query.lastError().text();
+        assert(0);
     }
     emit statusText("Creating the index ...");
     if (!query.exec("CREATE INDEX timeIndex ON dataset (departure_time, end_time)")) {
-        QMessageBox::warning(nullptr, "error", "fail to create the time index");
+        qDebug() << "fail to create the time index";
         qDebug() << query.lastError().text();
-        return;
+        assert(0);
     }
-    if (!query.exec("CREATE INDEX originIndex ON dataset (orig_lng, orig_lat)")) {
-        QMessageBox::warning(nullptr, "error", "fail to create the origin index");
-        qDebug() << query.lastError().text();
-        return;
-    }
-    if (!query.exec("CREATE INDEX destinationIndex ON dataset (dest_lng, dest_lat)")) {
-        QMessageBox::warning(nullptr, "error", "fail to create the destination index");
-        qDebug() << query.lastError().text();
-        return;
-    }
+    //    if (!query.exec("CREATE INDEX originIndex ON dataset (orig_lng, orig_lat)")) {
+    //        QMessageBox::warning(nullptr, "error", "fail to create the origin index");
+    //        qDebug() << query.lastError().text();
+    //        return;
+    //    }
+    //    if (!query.exec("CREATE INDEX destinationIndex ON dataset (dest_lng, dest_lat)")) {
+    //        QMessageBox::warning(nullptr, "error", "fail to create the destination index");
+    //        qDebug() << query.lastError().text();
+    //        return;
+    //    }
     if (!query.exec("CREATE INDEX timeNeededIndex ON dataset (time)")) {
-        QMessageBox::warning(nullptr, "error", "fail to create the time-needed index");
+        qDebug() << "fail to create the time-needed index";
         qDebug() << query.lastError().text();
-        return;
+        assert(0);
     }
     if (!query.exec("CREATE INDEX feeIndex ON dataset (fee)")) {
-        QMessageBox::warning(nullptr, "error", "fail to create the fee index");
+        qDebug() << "fail to create the fee index";
         qDebug() << query.lastError().text();
-        return;
+        assert(0);
     }
     db.close();
     emit statusText("Successfully init the database!");
@@ -61,8 +73,8 @@ void DataBase::load()
 {
     emit statusText("Opening the database ...");
     if (!db.open()) {
-        QMessageBox::warning(nullptr, "warning", "Can't create the database! ");
-        return;
+        qDebug() << "Can't create the database! ";
+        assert(0);
     }
     QSqlQuery query(db);
     emit statusText("Filtering the dataset ...");
@@ -84,9 +96,7 @@ void DataBase::load()
         QFile dataFile(GlobalData::globalData.conf_get("DataPath").toString() + '/' + dataSet);
         //        qDebug() << GlobalData::globalData.conf_get("DataPath").toString() + '/' + dataSet;
         if (!dataFile.open(QIODevice::ReadOnly)) {
-            QMessageBox::warning(nullptr,
-                                 "warning",
-                                 "Can't load the csv to the database: " + dataSet);
+            qDebug() << "Can't load the csv to the database: " << dataSet;
             continue;
         }
         emit statusText("Mapping the data: " + dataSet + " ...");
@@ -97,8 +107,8 @@ void DataBase::load()
         foreach (QString field, GlobalData::globalData.conf_get("Fields").toStringList()) {
             dataIndexMap[field] = dataIndex.indexOf(field);
             if (dataIndexMap[field] == -1) {
-                QMessageBox::warning(nullptr, "error", "Required field " + field + " not found!");
-                return;
+                qDebug() << "Required field " + field + " not found!";
+                assert(0);
             }
         }
         //        qDebug() << dataIndexMap;
@@ -134,9 +144,9 @@ void DataBase::load()
                             QString("%1").arg(dataLine[dataIndexMap["end_time"]].toInt()
                                               - dataLine[dataIndexMap["departure_time"]].toInt()));
             if (!query.exec()) {
-                QMessageBox::warning(nullptr, "error", "can't load the data\n" + insertSql);
+                qDebug() << "can't load the data\n" + insertSql;
                 qDebug() << query.lastError().text();
-                return;
+                assert(0);
             }
         }
         db.commit();
@@ -145,6 +155,66 @@ void DataBase::load()
     //    emit statusProgress(0);
     db.close();
     //    QMessageBox::information(nullptr, "success", "load already success!");
+}
+
+void DataBase::loadGrids()
+{
+    emit statusText("Opening the database ...");
+    if (!db.open()) {
+        qDebug() << "Can't create the database! ";
+        assert(0);
+    }
+    QSqlQuery query(db);
+    emit statusText("Filtering the grid ...");
+    QFile dataFile(GlobalData::globalData.conf_get("DataPath").toString() + '/'
+                   + "rectangle_grid_table.csv");
+    //        qDebug() << GlobalData::globalData.conf_get("DataPath").toString() + '/' + dataSet;
+    if (!dataFile.open(QIODevice::ReadOnly)) {
+        qDebug() << "Can't load the csv to the grid";
+        assert(0);
+    }
+    emit statusText("Mapping the data ...");
+    QTextStream dataStream(&dataFile);
+    QStringList dataIndex = dataStream.readLine().simplified().split(',');
+    QMap<QString, int> dataIndexMap;
+    foreach (QString field, GlobalData::globalData.conf_get("Grids").toStringList()) {
+        dataIndexMap[field] = dataIndex.indexOf(field);
+        if (dataIndexMap[field] == -1) {
+            qDebug() << "Required field " + field + " not found!";
+            assert(0);
+        }
+    }
+    //        qDebug() << dataIndexMap;
+    QString insertTable, insertValue;
+    foreach (QString field, dataIndexMap.keys()) {
+        if (!insertTable.isEmpty())
+            insertTable += ", ";
+        if (!insertValue.isEmpty())
+            insertValue += ", ";
+        insertTable += field;
+        insertValue += (":" + field);
+    }
+    db.transaction();
+    QString insertSql = "INSERT INTO grid (" + insertTable + ") VALUES (" + insertValue + ")";
+    query.prepare(insertSql);
+    //        qDebug() << "Preparing the instruction: " + insertSql + " ...";
+    emit statusText("Loading the grid ...");
+    while (!dataStream.atEnd()) {
+        QStringList dataLine = dataStream.readLine().simplified().split(',');
+        //            emit statusProgress(dataStream.pos() * 100 / dataFile.size());
+        //            qDebug() << dataStream.pos() << dataFile.size();
+        foreach (QString field, dataIndex) {
+            query.bindValue(":" + field, dataLine[dataIndexMap[field]]);
+            //                qDebug() << field << dataLine[dataIndexMap[field]];
+        }
+        if (!query.exec()) {
+            qDebug() << "can't load the grid" << endl << insertSql;
+            qDebug() << query.lastError().text();
+            assert(0);
+        }
+    }
+    db.commit();
+    dataFile.close();
 }
 
 int DataBase::searchNum(QString command)
@@ -200,6 +270,26 @@ QVariant DataBase::searchTarget(QString command)
     result = query.value(query.record().indexOf("Target"));
     db.close();
     //    qDebug() << list;
+    return result;
+}
+
+QList<QRectF> DataBase::getGrid()
+{
+    emit statusText("Opening the database ...");
+    if (!db.open()) {
+        QMessageBox::warning(nullptr, "warning", "Can't create the database! ");
+        assert(0);
+    }
+    QList<QRectF> result;
+    QSqlQuery query("SELECT * FROM grid", db);
+    while (query.next()) {
+        QPointF topLeft = {query.value(query.record().indexOf("vertex0_lat")).toDouble(),
+                           query.value(query.record().indexOf("vertex0_lng")).toDouble()};
+        QPointF bottomRight = {query.value(query.record().indexOf("vertex0_lat")).toDouble(),
+                               query.value(query.record().indexOf("vertex0_lng")).toDouble()};
+        result.push_back(QRectF(topLeft, bottomRight));
+    }
+    db.close();
     return result;
 }
 
