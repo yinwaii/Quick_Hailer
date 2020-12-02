@@ -148,7 +148,7 @@
       <string notr="true">QTabWidget::tab-bar { alignment: center; } </string>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tabDemand">
       <attribute name="title">
@@ -176,9 +176,7 @@
       </attribute>
       <layout class="QGridLayout" name="gridLayout_4">
        <item row="0" column="0">
-        <widget class="QWidget" name="plotDistribution" native="true">
-         <layout class="QGridLayout" name="gridLayout_3"/>
-        </widget>
+        <layout class="QGridLayout" name="containerDistributionTime"/>
        </item>
       </layout>
      </widget>
@@ -188,15 +186,7 @@
       </attribute>
       <layout class="QGridLayout" name="gridLayout_7">
        <item row="0" column="0">
-        <widget class="QWidget" name="plotRevenue" native="true">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_6"/>
-        </widget>
+        <layout class="QGridLayout" name="containerRevenue"/>
        </item>
       </layout>
      </widget>

@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Maps/map.qml</file>
+    </qresource>
+</RCC>

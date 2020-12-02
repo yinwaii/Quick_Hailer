@@ -15,5 +15,13 @@ void MainWindow::open_the_mainWindow()
 {
     SeriesManager sm;
     this->show();
+    ui->tabData->printDistribution();
     ui->tabData->printDemandTime();
+    ui->tabData->printRevenue();
+    //    QThread *loadCharts = QThread::create([this] {
+    //        ui->tabData->printDistribution();
+    //        ui->tabData->printDemandTime();
+    //        ui->tabData->printRevenue();
+    //    });
+    //    loadCharts->start();
 }

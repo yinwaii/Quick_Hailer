@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
+    <width>472</width>
     <height>300</height>
    </rect>
   </property>
@@ -259,8 +259,15 @@
         </layout>
        </item>
        <item row="0" column="0">
-        <widget class="QWidget" name="plotRouteMap" native="true">
-         <layout class="QGridLayout" name="gridLayout_14"/>
+        <widget class="QQuickWidget" name="quickWidget">
+         <property name="resizeMode">
+          <enum>QQuickWidget::SizeRootObjectToView</enum>
+         </property>
+         <property name="source">
+          <url>
+           <string>qrc:/Maps/map.qml</string>
+          </url>
+         </property>
         </widget>
        </item>
       </layout>
@@ -269,6 +276,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QQuickWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">QtQuickWidgets/QQuickWidget</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

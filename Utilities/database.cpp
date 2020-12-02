@@ -23,7 +23,7 @@ void DataBase::init()
     emit statusText("Creating the dataset table ...");
     if (!query.exec("CREATE TABLE dataset (order_id TEXT, departure_time INT, end_time INT, "
                     "orig_lng FLOAT, "
-                    "orig_lat FLOAT, dest_lng FLOAT, dest_lat FLOAT, fee FLOAT)")) {
+                    "orig_lat FLOAT, dest_lng FLOAT, dest_lat FLOAT, fee FLOAT, time INT)")) {
         QMessageBox::warning(nullptr, "error", "fail to create the table");
         qDebug() << query.lastError().text();
         return;
@@ -41,6 +41,16 @@ void DataBase::init()
     }
     if (!query.exec("CREATE INDEX destinationIndex ON dataset (dest_lng, dest_lat)")) {
         QMessageBox::warning(nullptr, "error", "fail to create the destination index");
+        qDebug() << query.lastError().text();
+        return;
+    }
+    if (!query.exec("CREATE INDEX timeNeededIndex ON dataset (time)")) {
+        QMessageBox::warning(nullptr, "error", "fail to create the time-needed index");
+        qDebug() << query.lastError().text();
+        return;
+    }
+    if (!query.exec("CREATE INDEX feeIndex ON dataset (fee)")) {
+        QMessageBox::warning(nullptr, "error", "fail to create the fee index");
         qDebug() << query.lastError().text();
         return;
     }
@@ -101,6 +111,8 @@ void DataBase::load()
             insertTable += field;
             insertValue += (":" + field);
         }
+        insertTable += ", time";
+        insertValue += ", :time";
         db.transaction();
         QString insertSql = "INSERT INTO dataset (" + insertTable + ") VALUES (" + insertValue
                             + ")";
@@ -118,6 +130,9 @@ void DataBase::load()
                     query.bindValue(":" + field, "\'" + dataLine[dataIndexMap[field]] + "\'");
                 //                qDebug() << field << dataLine[dataIndexMap[field]];
             }
+            query.bindValue(":time",
+                            QString("%1").arg(dataLine[dataIndexMap["end_time"]].toInt()
+                                              - dataLine[dataIndexMap["departure_time"]].toInt()));
             if (!query.exec()) {
                 QMessageBox::warning(nullptr, "error", "can't load the data\n" + insertSql);
                 qDebug() << query.lastError().text();
@@ -127,7 +142,7 @@ void DataBase::load()
         db.commit();
         dataFile.close();
     }
-    emit statusProgress(0);
+    //    emit statusProgress(0);
     db.close();
     //    QMessageBox::information(nullptr, "success", "load already success!");
 }
@@ -143,12 +158,48 @@ int DataBase::searchNum(QString command)
     QSqlQuery query(command, db);
     query.exec();
     int result = 0;
-    //    int result = query.size();
-    //    int fee = query.record().indexOf("fee");
     while (query.next()) {
         result++;
     }
+    //    qDebug() << "result:" << result;
     db.close();
+    return result;
+}
+
+QList<QVariant> DataBase::search(QString command)
+{
+    emit statusText("Opening the database ...");
+    if (!db.open()) {
+        QMessageBox::warning(nullptr, "warning", "Can't create the database! ");
+        assert(0);
+    }
+    qDebug() << command;
+    QSqlQuery query(command, db);
+    QList<QVariant> list;
+    query.exec();
+    while (query.next()) {
+        list.push_back(query.value(query.record().indexOf("Target")));
+    }
+    db.close();
+    //    qDebug() << list;
+    return list;
+}
+
+QVariant DataBase::searchTarget(QString command)
+{
+    emit statusText("Opening the database ...");
+    if (!db.open()) {
+        QMessageBox::warning(nullptr, "warning", "Can't create the database! ");
+        assert(0);
+    }
+    qDebug() << command;
+    QSqlQuery query(command, db);
+    QVariant result;
+    query.exec();
+    assert(query.next());
+    result = query.value(query.record().indexOf("Target"));
+    db.close();
+    //    qDebug() << list;
     return result;
 }
 

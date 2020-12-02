@@ -24,6 +24,8 @@ public:
     void init();
     void load();
     int searchNum(QString command);
+    QList<QVariant> search(QString command);
+    QVariant searchTarget(QString command);
     ~DataBase();
 
 signals:

@@ -9,6 +9,7 @@ class AxisManager : public QObject
     Q_OBJECT
 
 public:
+    enum AxisType { DataTime, Value };
     enum AxisConfigItem { TickCount, Format, LabelsAngle, Range };
     static QMap<AxisConfigItem, QVariant> internal_date;
     static QMap<AxisConfigItem, QVariant> internal_value;
@@ -58,8 +59,8 @@ public:
     inline void attachSeries(QXYSeries *series) override { series->attachAxis(axis); }
     inline void loadRange() override
     {
-        axis->setRange(QDateTime::fromTime_t(int(bound.first)),
-                       QDateTime::fromTime_t(int(bound.second)));
+        axis->setRange(QDateTime::fromMSecsSinceEpoch(int(bound.first)),
+                       QDateTime::fromMSecsSinceEpoch(int(bound.second)));
     }
     ~DateTimeAxisManager() { delete axis; }
 };

@@ -22,11 +22,15 @@ public:
 
 public slots:
     void printDemandTime();
+    void printDistribution();
+    void printRevenue();
     void updatePlots();
 
 private:
     Ui::DataTab *ui;
     ChartManager *chartDemandTime;
+    ChartManager *chartDistribution;
+    ChartManager *chartRevenue;
 };
 
 #endif // DATATAB_H

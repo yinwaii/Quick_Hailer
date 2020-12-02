@@ -13,38 +13,43 @@ class ChartManager : public QObject
     Q_OBJECT
 public:
     //    enum ChartType { Spline, Line, Scatter };
-    explicit ChartManager(QGridLayout *ctn = nullptr, QObject *parent = nullptr);
+    explicit ChartManager(QGridLayout *ctn = nullptr, QString ttl = NULL, QObject *parent = nullptr);
     void load();
     SeriesManager *getSeries() { return series; }
-    inline void initSeries(QString id, QStringList recodes,
-                           QMap<QString, SeriesManager::SeriesType> typeConfig = {})
+    inline void addSeriesId(QString id, QStringList recodes,
+                            QMap<QString, SeriesManager::SeriesType> typeConfig = {})
     {
-        seriesConfig.idField = id;
-        seriesConfig.recodeFields = recodes;
-        seriesConfig.typeConfig = typeConfig;
-        series->clearAllRecode();
-        series->reset(seriesConfig.idField, seriesConfig.recodeFields);
-        series->setType(seriesConfig.typeConfig);
+        seriesConfig.idFields.push_back(id);
+        seriesConfig.recodeFields[id] = recodes;
+        foreach (QString recode, typeConfig.keys()) {
+            seriesConfig.typeConfig[recode] = typeConfig[recode];
+        }
+        series->reset(seriesConfig);
     }
+    void initAxisX(AxisManager::AxisType type, Qt::Alignment alignment,
+                   QMap<AxisManager::AxisConfigItem, QVariant> config = {});
+    void initAxisY(AxisManager::AxisType type, Qt::Alignment alignment,
+                   QMap<AxisManager::AxisConfigItem, QVariant> config = {});
+    void addAxis(QString name, AxisManager::AxisType type, Qt::Alignment alignment,
+                 QStringList seriesList = {},
+                 QMap<AxisManager::AxisConfigItem, QVariant> config = AxisManager::internal_value);
     inline AxisManager *getAxisX() { return axisX; }
     inline AxisManager *getAxisY() { return axisY; }
+    inline AxisManager *getOtherAxis(QString field) { return otherAxis[field]; }
     ~ChartManager();
 signals:
 private:
     //    ChartType type;
-    struct
-    {
-        QString idField;
-        QStringList recodeFields;
-        QMap<QString, SeriesManager::SeriesType> typeConfig;
-    } seriesConfig;
+    QString title;
+    SeriesManager::SeriesConfig seriesConfig;
     QGridLayout *container;
     //    QList<QXYSeries *> serieses;
     QChart *chart;
     QChartView *chartView;
     AxisManager *axisX;
     AxisManager *axisY;
-
+    QMap<QString, AxisManager *> otherAxis;
+    QMap<QString, QStringList> otherAxisSeries;
     SeriesManager *series;
 };
 

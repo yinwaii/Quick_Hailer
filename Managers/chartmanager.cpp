@@ -1,69 +1,116 @@
 #include "chartmanager.h"
 
-ChartManager::ChartManager(QGridLayout *ctn, QObject *parent) : QObject(parent), container(ctn)
+ChartManager::ChartManager(QGridLayout *ctn, QString ttl, QObject *parent)
+    : QObject(parent), title(ttl), container(ctn)
 {
     series = new SeriesManager;
-    axisX = new DateTimeAxisManager(Qt::AlignBottom);
-    axisX->loadConfig(AxisManager::internal_date);
+    axisX = new ValueAxisManager(Qt::AlignBottom);
+    axisX->loadConfig(AxisManager::internal_value);
     axisY = new ValueAxisManager(Qt::AlignLeft);
     axisY->loadConfig(AxisManager::internal_value);
 }
 void ChartManager::load()
 {
-    //    qDebug() << data;
-    //    assert(!data.isEmpty());
-    //    assert(data[0].size() >= 2);
+    qDebug() << "Start to load the chart ...";
+    qDebug() << "Clear the old data ...";
     if (container->widget() != NULL) {
         container->removeWidget(container->widget());
-        //        foreach (QXYSeries *series, serieses)
-        //            delete series;
-        //        serieses.clear();
         delete chart;
         delete chartView;
     }
-    series->clearAllRecode();
-    series->reset(seriesConfig.idField, seriesConfig.recodeFields);
-    series->setType(seriesConfig.typeConfig);
-    series->loadRecodes();
-
-    //    foreach (QList<QPointF> dat, data) {
-    //        //        qDebug() << dat;
-    //        QXYSeries *series;
-    //        switch (type) {
-    //        case Spline:
-    //            series = new QSplineSeries;
-    //            break;
-    //        case Line:
-    //            series = new QLineSeries;
-    //            break;
-    //        case Scatter:
-    //            series = new QScatterSeries;
-    //            break;
-    //        default:
-    //            QMessageBox::warning(nullptr, "error", "Invalid Chart Type!");
-    //            assert(0);
-    //        }
-    //        series->replace(dat);
-    //        serieses.push_back(series);
-    //    }
-    //    axisY->setRange(series->getBound(series->fieldList()[0]));
-    //    axisX->loadRange();
+    qDebug() << "Recreate the data ...";
+    series->reset(seriesConfig);
     //    foreach (QPointF p, series->getSeries(series->fieldList()[0])->points())
     //        qDebug() << QDateTime::fromTime_t(p.x());
+    qDebug() << "Setting the axes ...";
     chart = new QChart;
     axisX->addAxis(chart);
     axisY->addAxis(chart);
-    foreach (QString field, series->fieldList()) {
-        chart->addSeries(series->getSeries(field));
-        axisX->attachSeries(series->getSeries(field));
-        axisY->attachSeries(series->getSeries(field));
+    QStringList otherSeriesList;
+    foreach (QString field, otherAxisSeries.keys()) {
+        otherSeriesList.append(otherAxisSeries[field]);
     }
-    //    foreach (QXYSeries *series, serieses) {
-    //        chart->addSeries(series);
-    //    }
+    foreach (QString id, series->idList()) {
+        foreach (QString field, series->fieldList(id)) {
+            chart->addSeries(series->getSeries(field));
+            if (!otherSeriesList.contains(field)) {
+                axisX->attachSeries(series->getSeries(field));
+                axisY->attachSeries(series->getSeries(field));
+            }
+        }
+    }
+    foreach (QString field, otherAxis.keys()) {
+        otherAxis[field]->addAxis(chart);
+        foreach (QString str, otherAxisSeries[field])
+            otherAxis[field]->attachSeries(series->getSeries(str));
+    }
+    qDebug() << "Loading the chart ...";
+    if (!title.isNull())
+        chart->setTitle(title);
     chartView = new QChartView(chart);
     chartView->setRenderHint(QPainter::Antialiasing);
     container->addWidget(chartView, 0, 0);
+    qDebug() << "Loading finished ...";
+}
+
+void ChartManager::initAxisX(AxisManager::AxisType type, Qt::Alignment alignment,
+                             QMap<AxisManager::AxisConfigItem, QVariant> config)
+{
+    if (!(axisX == nullptr))
+        delete axisX;
+    switch (type) {
+    case AxisManager::AxisType::DataTime:
+        axisX = new DateTimeAxisManager(alignment);
+        break;
+    case AxisManager::AxisType::Value:
+        axisX = new ValueAxisManager(alignment);
+        break;
+    default:
+        assert(0);
+    }
+    axisX->loadConfig(config);
+}
+
+void ChartManager::initAxisY(AxisManager::AxisType type, Qt::Alignment alignment,
+                             QMap<AxisManager::AxisConfigItem, QVariant> config)
+{
+    if (!(axisY == nullptr))
+        delete axisY;
+    switch (type) {
+    case AxisManager::AxisType::DataTime:
+        axisY = new DateTimeAxisManager(alignment);
+        break;
+    case AxisManager::AxisType::Value:
+        axisY = new ValueAxisManager(alignment);
+        break;
+    default:
+        assert(0);
+    }
+    axisX->loadConfig(config);
+}
+
+void ChartManager::addAxis(QString name, AxisManager::AxisType type, Qt::Alignment alignment,
+                           QStringList seriesList,
+                           QMap<AxisManager::AxisConfigItem, QVariant> config)
+{
+    if (otherAxis.contains(name)) {
+        delete otherAxis[name];
+    }
+    switch (type) {
+    case AxisManager::AxisType::DataTime:
+        otherAxis[name] = new DateTimeAxisManager(alignment);
+        break;
+    case AxisManager::AxisType::Value:
+        otherAxis[name] = new ValueAxisManager(alignment);
+        break;
+    default:
+        assert(0);
+    }
+    otherAxis[name]->loadConfig(config);
+    if (seriesList.isEmpty())
+        otherAxisSeries[name] = QStringList({name});
+    else
+        otherAxisSeries[name] = seriesList;
 }
 
 ChartManager::~ChartManager()
