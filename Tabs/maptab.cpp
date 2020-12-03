@@ -8,7 +8,13 @@ MapTab::MapTab(QWidget *parent) :
     ui->setupUi(this);
 }
 
-void MapTab::loadMap() {}
+void MapTab::loadMap()
+{
+    //    lis = DataBase::dataBase.getGrid();
+    //    qDebug() << lis;
+    //    emit
+    ui->quickWidget->rootObject()->findChild<MapManager *>("mapManager")->initGrids();
+}
 
 MapTab::~MapTab()
 {

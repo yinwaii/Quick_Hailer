@@ -1,9 +1,11 @@
 #ifndef MAPTAB_H
 #define MAPTAB_H
 
+#include "Managers/mapmanager.h"
 #include "Utilities/database.h"
 #include "Utilities/globaldata.h"
 #include <QQmlContext>
+#include <QQuickItem>
 #include <QWidget>
 
 namespace Ui {

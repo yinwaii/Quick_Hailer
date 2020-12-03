@@ -273,21 +273,24 @@ QVariant DataBase::searchTarget(QString command)
     return result;
 }
 
-QList<QRectF> DataBase::getGrid()
+QVariantList DataBase::getGrid()
 {
     emit statusText("Opening the database ...");
     if (!db.open()) {
         QMessageBox::warning(nullptr, "warning", "Can't create the database! ");
         assert(0);
     }
-    QList<QRectF> result;
+    QVariantList result;
     QSqlQuery query("SELECT * FROM grid", db);
     while (query.next()) {
         QPointF topLeft = {query.value(query.record().indexOf("vertex0_lat")).toDouble(),
                            query.value(query.record().indexOf("vertex0_lng")).toDouble()};
-        QPointF bottomRight = {query.value(query.record().indexOf("vertex0_lat")).toDouble(),
-                               query.value(query.record().indexOf("vertex0_lng")).toDouble()};
-        result.push_back(QRectF(topLeft, bottomRight));
+        QPointF bottomRight = {query.value(query.record().indexOf("vertex2_lat")).toDouble(),
+                               query.value(query.record().indexOf("vertex2_lng")).toDouble()};
+        QRectF rect;
+        rect.setTopLeft(topLeft);
+        rect.setBottomRight(bottomRight);
+        result.push_back(rect);
     }
     db.close();
     return result;
