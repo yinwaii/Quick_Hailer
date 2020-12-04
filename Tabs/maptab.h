@@ -24,6 +24,9 @@ public slots:
 
 private:
     Ui::MapTab *ui;
+    MapManager *managerRoute;
+    MapManager *managerThermalOrigin;
+    MapManager *managerThermalDestination;
 };
 
 #endif // MAPTAB_H

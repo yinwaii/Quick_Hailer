@@ -283,6 +283,7 @@ QVariantList DataBase::getGrid()
     QVariantList result;
     QSqlQuery query("SELECT * FROM grid", db);
     while (query.next()) {
+        QVariantMap tmp;
         QPointF topLeft = {query.value(query.record().indexOf("vertex0_lat")).toDouble(),
                            query.value(query.record().indexOf("vertex0_lng")).toDouble()};
         QPointF bottomRight = {query.value(query.record().indexOf("vertex2_lat")).toDouble(),
@@ -290,7 +291,8 @@ QVariantList DataBase::getGrid()
         QRectF rect;
         rect.setTopLeft(topLeft);
         rect.setBottomRight(bottomRight);
-        result.push_back(rect);
+        tmp["grid"] = rect;
+        result.push_back(tmp);
     }
     db.close();
     return result;
