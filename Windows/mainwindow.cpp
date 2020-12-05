@@ -15,9 +15,9 @@ void MainWindow::open_the_mainWindow()
 {
     SeriesManager sm;
     this->show();
-    ui->tabData->printDistribution();
-    ui->tabData->printDemandTime();
-    ui->tabData->printRevenue();
+    //    ui->tabData->printDistribution();
+    //    ui->tabData->printDemandTime();
+    //    ui->tabData->printRevenue();
     DataBase::dataBase.getGrid();
     emit ui->tabMap->loadMap();
     //    QThread *loadCharts = QThread::create([this] {

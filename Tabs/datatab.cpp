@@ -155,9 +155,9 @@ void DataTab::printRevenue()
 
 void DataTab::updatePlots()
 {
-    printDemandTime();
-    printDistribution();
-    printRevenue();
+    //    printDemandTime();
+    //    printDistribution();
+    //    printRevenue();
     //        switch (ui->widgetData->currentIndex()) {
     //        case 0:
     //            printDemandTime();

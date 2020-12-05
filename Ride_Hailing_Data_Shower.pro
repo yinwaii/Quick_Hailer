@@ -28,8 +28,7 @@ SOURCES += \
     Tabs/querytab.cpp \
     Managers/axismanager.cpp \
     Managers/chartmanager.cpp \
-    Managers/seriesmanager.cpp \
-    mapgridmodel.cpp
+    Managers/seriesmanager.cpp
 
 HEADERS += \
     Managers/mapmanager.h \
@@ -43,8 +42,7 @@ HEADERS += \
     Tabs/querytab.h \
     Managers/axismanager.h \
     Managers/chartmanager.h \
-    Managers/seriesmanager.h \
-    mapgridmodel.h
+    Managers/seriesmanager.h
 
 FORMS += \
     Windows/loadwindow.ui \

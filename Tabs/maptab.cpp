@@ -6,9 +6,9 @@ MapTab::MapTab(QWidget *parent) :
       ui(new Ui::MapTab)
 {
     ui->setupUi(this);
-    managerRoute = MapManager::getMapManager(ui->plotRoute);
-    managerThermalOrigin = MapManager::getMapManager(ui->plotThermalOrigin);
-    managerThermalDestination = MapManager::getMapManager(ui->plotThernalDestination);
+    managerRoute = MapManager::getManager(ui->plotRoute);
+    managerThermalOrigin = MapManager::getManager(ui->plotThermalOrigin);
+    managerThermalDestination = MapManager::getManager(ui->plotThernalDestination);
 }
 
 void MapTab::loadMap()
@@ -20,7 +20,7 @@ void MapTab::loadMap()
     managerRoute->updateHeat(ui->editThermalTimeFrom->dateTime().toTime_t(),
                              ui->editThermalTimeTo->dateTime().toTime_t());
     //    managerRoute->updateModel();
-    managerThermalOrigin->initGrids();
+    //    managerThermalOrigin->initGrids();
     //    managerThermalDestination->initGrids();
     //    ui->quickWidget->rootObject()->findChild<MapManager *>("mapManager")->initGrids();
     //    ui->plotThermalOrigin->rootObject()->findChild<MapManager *>("mapManager")->initGrids();
@@ -32,5 +32,8 @@ void MapTab::loadMap()
 
 MapTab::~MapTab()
 {
+    delete managerRoute;
+    delete managerThermalOrigin;
+    delete managerThermalDestination;
     delete ui;
 }

@@ -10,30 +10,24 @@
 class MapManager : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QVariantList grids READ grids WRITE setGrids NOTIFY gridsChanged)
-    Q_PROPERTY(QVariantList heat READ heat WRITE setHeat NOTIFY heatChanged)
-    Q_PROPERTY(QVariantList gridData READ gridData WRITE setGridData NOTIFY gridDataChanged)
+    Q_PROPERTY(QVariantList gridList READ gridList NOTIFY updateGridList);
+
 public:
-    static MapManager *getMapManager(QQuickWidget *widget);
+    static MapManager *getManager(QQuickWidget *root, QString id = "mapManager");
     explicit MapManager(QObject *parent = nullptr);
-    void setRoot(QQuickWidget *item);
-    QVariantList grids() const;
-    QVariantList heat() const;
-    QVariantList gridData() const;
-    void setGrids(const QVariantList &grids);
-    void setHeat(const QVariantList &heat);
-    void setGridData(const QVariantList &gridData);
-    Q_INVOKABLE void initGrids();
-    Q_INVOKABLE void updateHeat(double start, double end);
-    Q_INVOKABLE void updateModel();
+    QVariantList gridList() const;
+    void initGrids();
+    void updateHeat(double start, double end);
 
 private:
     QQuickWidget *root;
-    QVariantList m_gridData;
+    QString id;
+    QObject *model;
+    QVariantList m_gridList;
 signals:
-    void gridsChanged();
-    void heatChanged();
-    void gridDataChanged();
+    void updateGrid();
+    void updateHeat();
+    void updateGridList();
 };
 
 #endif // MAPMANAGER_H

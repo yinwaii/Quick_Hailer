@@ -292,6 +292,8 @@ QVariantList DataBase::getGrid()
         rect.setTopLeft(topLeft);
         rect.setBottomRight(bottomRight);
         tmp["grid"] = rect;
+        tmp["entry"] = -1;
+        tmp["exit"] = -1;
         result.push_back(tmp);
     }
     db.close();
