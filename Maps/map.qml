@@ -35,7 +35,7 @@ Rectangle {
                 id: mapRectangle
                 border.width: 1
                 color: "red"
-                opacity: entry
+                opacity: (entry>0)?(2*entry):0.2
                 topLeft: QtPositioning.coordinate(grid.x,grid.y)
                 bottomRight: QtPositioning.coordinate(grid.x+grid.width,grid.y+grid.height)
                 Component.onCompleted: {
@@ -54,16 +54,6 @@ Rectangle {
                 onUpdateHeat: {
                     for(var i=0;i<gridList.length;i++)
                         mapGridModel.set(i,gridList[i])
-                }
-
-                onUpdateGridList: {
-//                    mapGridModel.clear()
-//                    console.log(mapGridModel.rowCount())
-//                    for(var i=0;i<gridList.length;i++)
-//                    {
-//                        mapGridModel.append(gridList[i])
-//                        console.log(mapGridModel.data(i,entry))
-//                    }
                 }
             }
         }

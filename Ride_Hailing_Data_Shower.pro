@@ -17,6 +17,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     Managers/mapmanager.cpp \
+    Managers/routemanager.cpp \
     main.cpp \
     Utilities/database.cpp \
     Utilities/globaldata.cpp \
@@ -32,6 +33,7 @@ SOURCES += \
 
 HEADERS += \
     Managers/mapmanager.h \
+    Managers/routemanager.h \
     Utilities/database.h \
     Utilities/globaldata.h \
     Windows/loadwindow.h \
