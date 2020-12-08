@@ -300,6 +300,77 @@ QVariantList DataBase::getGrid()
     return result;
 }
 
+QVariantList DataBase::getEntryExit(double start, double end, int step)
+{
+    int maxEntry = -1, maxExit = -1;
+    emit statusText("Opening the database ...");
+    if (!db.open()) {
+        QMessageBox::warning(nullptr, "warning", "Can't create the database! ");
+        assert(0);
+    }
+    QVariantList result;
+    for (int i = 0; i < step * step; i++) {
+        QVariantMap tmp;
+        QPointF topLeft = {GlobalData::globalData.get_edge_lat(step, i / step + 1),
+                           GlobalData::globalData.get_edge_lng(step, i % step)};
+        QPointF bottomRight = {GlobalData::globalData.get_edge_lat(step, i / step),
+                               GlobalData::get_edge_lng(step, i % step + 1)};
+        QRectF rect;
+        rect.setTopLeft(topLeft);
+        rect.setBottomRight(bottomRight);
+        tmp["grid"] = rect;
+        tmp["entry"] = 0;
+        tmp["exit"] = 0;
+        result.push_back(tmp);
+    }
+    QString commandEntry
+        = QString("SELECT * FROM dataset WHERE departure_time > %1 AND departure_time < %2")
+              .arg(start)
+              .arg(end);
+    QSqlQuery query(commandEntry, db);
+    while (query.next()) {
+        int entryIndex = GlobalData::globalData
+                             .get_grid(step,
+                                       query.value(query.record().indexOf("orig_lng")).toDouble(),
+                                       query.value(query.record().indexOf("orig_lat")).toDouble());
+        //        qDebug() << query.value(query.record().indexOf("orig_lng")).toDouble()
+        //                 << query.value(query.record().indexOf("orig_lat")).toDouble() << entryIndex;
+        if (entryIndex >= step * step || entryIndex < 0)
+            continue;
+        QVariantMap entryMap = result[entryIndex].toMap();
+        entryMap["entry"] = entryMap["entry"].toInt() + 1;
+        result[entryIndex] = entryMap;
+        if (maxEntry == -1 || entryMap["entry"].toInt() > maxEntry)
+            maxEntry = entryMap["entry"].toInt();
+    }
+    QString commandExit
+        = QString("SELECT * FROM dataset WHERE end_time > %1 AND end_time < %2").arg(start).arg(end);
+    query.exec(commandExit);
+    while (query.next()) {
+        int exitIndex = GlobalData::globalData
+                            .get_grid(step,
+                                      query.value(query.record().indexOf("dest_lng")).toDouble(),
+                                      query.value(query.record().indexOf("dest_lat")).toDouble());
+        //        qDebug() << query.value(query.record().indexOf("dest_lng")).toDouble()
+        //                 << query.value(query.record().indexOf("dest_lat")).toDouble() << exitIndex;
+        if (exitIndex >= step * step || exitIndex < 0)
+            continue;
+        QVariantMap exitMap = result[exitIndex].toMap();
+        exitMap["exit"] = exitMap["exit"].toInt() + 1;
+        result[exitIndex] = exitMap;
+        if (maxExit == -1 || exitMap["exit"].toInt() > maxExit)
+            maxExit = exitMap["exit"].toInt();
+    }
+    for (int i = 0; i < result.count(); i++) {
+        QVariantMap tmp = result[i].toMap();
+        tmp["entry"] = double(result[i].toMap()["entry"].toInt()) / double(maxEntry);
+        tmp["exit"] = double(result[i].toMap()["exit"].toInt()) / double(maxExit);
+        result[i] = tmp;
+    }
+    db.close();
+    return result;
+}
+
 DataBase::~DataBase()
 {
     db.removeDatabase("ride_hailing_data");

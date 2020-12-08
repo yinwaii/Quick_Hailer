@@ -4,6 +4,7 @@
 DataTab::DataTab(QWidget *parent) : QWidget(parent), ui(new Ui::DataTab)
 {
     ui->setupUi(this);
+    managerGrid = MapManager::getManager(ui->containerGrid);
 }
 
 DataTab::~DataTab()
@@ -155,9 +156,11 @@ void DataTab::printRevenue()
 
 void DataTab::updatePlots()
 {
-    //    printDemandTime();
-    //    printDistribution();
-    //    printRevenue();
+    managerGrid->initGrids();
+    printDemandTime();
+    printDistribution();
+    printRevenue();
+    managerGrid->initGrids();
     //        switch (ui->widgetData->currentIndex()) {
     //        case 0:
     //            printDemandTime();

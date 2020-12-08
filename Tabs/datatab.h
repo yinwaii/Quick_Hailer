@@ -2,6 +2,7 @@
 #define DATATAB_H
 
 #include "Managers/chartmanager.h"
+#include "Managers/mapmanager.h"
 #include "Utilities/database.h"
 #include <QDebug>
 #include <QSqlQuery>
@@ -31,6 +32,7 @@ private:
     ChartManager *chartDemandTime;
     ChartManager *chartDistribution;
     ChartManager *chartRevenue;
+    MapManager *managerGrid;
 };
 
 #endif // DATATAB_H

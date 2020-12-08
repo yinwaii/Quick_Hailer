@@ -2,6 +2,7 @@
 #define MAPMANAGER_H
 
 #include "Utilities/database.h"
+#include "Utilities/globaldata.h"
 #include <QGeoCoordinate>
 #include <QObject>
 #include <QQmlContext>
@@ -12,7 +13,7 @@ class MapManager : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QVariantList gridList READ gridList NOTIFY updateGridList);
-    Q_PROPERTY(QVariantList coordinateList READ coordinateList WRITE setCoordinate NOTIFY
+    Q_PROPERTY(QVariantList coordinateList READ coordinateList WRITE setCoordinateList NOTIFY
                    updateCoordinateList);
     Q_PROPERTY(QGeoCoordinate coordinateFrom READ coordinateFrom WRITE setCoordinateFrom NOTIFY
                    updateCoordinateFrom);
@@ -30,7 +31,8 @@ public:
     void setCoordinateFrom(const QGeoCoordinate &coordinateFrom);
     void setCoordinateTo(const QGeoCoordinate &coordinateTo);
     void initGrids();
-    void updateHeat(double start, double end);
+    void updateHeatEntry(double start, double end, int step);
+    void updateHeatExit(double start, double end, int step);
 
 private:
     QQuickWidget *root;
@@ -41,7 +43,8 @@ private:
     QVariantList m_coordinateList;
 signals:
     void updateGrid();
-    void updateHeat();
+    void updateHeatEntry();
+    void updateHeatExit();
     void updateGridList();
     void updateCoordinateList();
     void updateCoordinateFrom();

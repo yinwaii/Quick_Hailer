@@ -26,16 +26,16 @@ Rectangle {
         zoomLevel: 11
 
         MapItemView{
-            id: mapGridsView
+            id: mapEntryView
             model: ListModel {
-                id: mapGridModel
+                id: mapEntryModel
             }
 
             delegate: MapRectangle {
-                id: mapRectangle
-                border.width: 1
+                id: mapEntryRectangle
+                border.width: 0
                 color: "red"
-                opacity: (entry>0)?(2*entry):0.2
+                opacity: (entry>0)?(entry):0.2
                 topLeft: QtPositioning.coordinate(grid.x,grid.y)
                 bottomRight: QtPositioning.coordinate(grid.x+grid.width,grid.y+grid.height)
                 Component.onCompleted: {
@@ -43,17 +43,72 @@ Rectangle {
 //                        opacity=0.2
                 }
             }
-            MapManager {
-                id:mapManager
-                objectName: "mapManager"
-                onUpdateGrid: {
-                    for(var i=0;i<gridList.length;i++)
-                        mapGridModel.append(gridList[i])
-                }
+        }
+        MapItemView{
+            id: mapExitView
+            model: ListModel {
+                id: mapExitModel
+            }
 
-                onUpdateHeat: {
-                    for(var i=0;i<gridList.length;i++)
-                        mapGridModel.set(i,gridList[i])
+            delegate: MapRectangle {
+                id: mapExitRectangle
+                border.width: 0
+                color: "blue"
+                opacity: (exit>0)?(exit):0.2
+                topLeft: QtPositioning.coordinate(grid.x,grid.y)
+                bottomRight: QtPositioning.coordinate(grid.x+grid.width,grid.y+grid.height)
+                Component.onCompleted: {
+//                    if(entry==undefined)
+//                        opacity=0.2
+                }
+            }
+        }
+
+        MapItemView{
+            id: mapGridsView
+            model: ListModel {
+                id: mapGridModel
+            }
+
+            delegate: MapRectangle {
+                id: mapGridRectangle
+                border.width: 1
+                color: "red"
+                opacity: 0
+                topLeft: QtPositioning.coordinate(grid.x,grid.y)
+                bottomRight: QtPositioning.coordinate(grid.x+grid.width,grid.y+grid.height)
+                Component.onCompleted: {
+//                    if(entry==undefined)
+//                        opacity=0.2
+                }
+            }
+        }
+
+        MapManager {
+            id:mapManager
+            objectName: "mapManager"
+            onUpdateGrid: {
+                for(var i=0;i<gridList.length;i++)
+                    mapGridModel.append(gridList[i])
+            }
+
+            onUpdateHeatEntry: {
+                for(var i=0;i<gridList.length;i++)
+                {
+                    if(gridList[i]["entry"]>0)
+                    {
+                        mapEntryModel.append(gridList[i])
+                    }
+                }
+            }
+
+            onUpdateHeatExit: {
+                for(var i=0;i<gridList.length;i++)
+                {
+                    if(gridList[i]["exit"]>0)
+                    {
+                        mapExitModel.append(gridList[i])
+                    }
                 }
             }
         }

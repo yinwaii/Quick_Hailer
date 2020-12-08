@@ -48,6 +48,10 @@ void ChartManager::load()
     if (!title.isNull())
         chart->setTitle(title);
     chartView = new QChartView(chart);
+    QSizePolicy policy = chartView->sizePolicy();
+    policy.setVerticalPolicy(QSizePolicy::Expanding);
+    policy.setHorizontalPolicy(QSizePolicy::Expanding);
+    chartView->setSizePolicy(policy);
     chartView->setRenderHint(QPainter::Antialiasing);
     container->addWidget(chartView, 0, 0);
     qDebug() << "Loading finished ...";

@@ -1,6 +1,10 @@
 #include "globaldata.h"
 
 GlobalData GlobalData::globalData;
+double GlobalData::lng_min = 103.90840747453100;
+double GlobalData::lng_max = 104.22204452546901;
+double GlobalData::lat_min = 30.524081949676100;
+double GlobalData::lat_max = 30.793878050323901;
 
 GlobalData::GlobalData()
 {
@@ -25,4 +29,26 @@ void GlobalData::conf_set(QString key, QVariant value)
 QVariant GlobalData::conf_get(QString key) const
 {
     return config[key];
+}
+
+int GlobalData::get_grid(int step, double lng, double lat)
+{
+    double lngStepLength = (lng_max - lng_min) / double(step);
+    int lngIndex = floor((lng - lng_min) / lngStepLength);
+    double latStepLength = (lat_max - lat_min) / double(step);
+    int latIndex = floor((lat - lat_min) / latStepLength);
+    int index = lngIndex + step * latIndex;
+    return index;
+}
+
+double GlobalData::get_edge_lng(int step, int index)
+{
+    double lngStepLength = (lng_max - lng_min) / double(step);
+    return lng_min + lngStepLength * index;
+}
+
+double GlobalData::get_edge_lat(int step, int index)
+{
+    double latStepLength = (lat_max - lat_min) / double(step);
+    return lat_min + latStepLength * index;
 }
