@@ -13,8 +13,10 @@ RouteManager::RouteManager() : provider("osm"), routingManager(provider.routingM
             SLOT(routeError(QGeoRouteReply *, QGeoRouteReply::Error, QString)));
 }
 
-void RouteManager::setRoute(const QGeoCoordinate &origin, const QGeoCoordinate &destination)
+void RouteManager::setRoute(const QGeoCoordinate &origin, const QGeoCoordinate &destination,
+                            int option)
 {
+    m_option = option;
     QGeoRouteRequest request(origin, destination);
 
     request.setTravelModes(QGeoRouteRequest::CarTravel);
@@ -60,7 +62,12 @@ void RouteManager::routeCalculated(QGeoRouteReply *reply)
         //        QGeoRoute route = reply->routes().at(0);
         route = reply->routes();
         qDebug() << "calculated" << reply->routes().length();
-        emit updateLine();
+        switch (m_option) {
+        case 0:
+            emit updateLine();
+        case 1:
+            emit updateFlow();
+        }
 
         //... now we have to make use of the route ...
     }
@@ -72,5 +79,11 @@ void RouteManager::routeError(QGeoRouteReply *reply, QGeoRouteReply ::Error erro
                               const QString &errorString)
 {
     // ... inform the user that an error has occurred ...
+    qDebug() << error;
     reply->deleteLater();
+}
+
+QGeoRoute RouteManager::getRoute() const
+{
+    return route.at(0);
 }

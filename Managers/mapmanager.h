@@ -5,6 +5,7 @@
 #include "Utilities/database.h"
 #include "Utilities/globaldata.h"
 #include <QGeoCoordinate>
+#include <QGeoPath>
 #include <QObject>
 #include <QQmlContext>
 #include <QQuickItem>
@@ -37,7 +38,7 @@ public:
     void initGrids();
     void updateHeatEntry(double start, double end, int step);
     void updateHeatExit(double start, double end, int step);
-    void updateRoute(double time);
+    void updateRoute(double time, int step);
 
 private:
     int routeCount;
@@ -54,7 +55,7 @@ public slots:
     void selectTo();
     void selectPlanning();
     void selectedPlanning();
-    //    void updatedRoute();
+    void updatedRoute();
 signals:
     void updateGrid();
     void updateHeatEntry();
@@ -65,6 +66,7 @@ signals:
     void updateCoordinateTo();
     void updateSelectStatus();
     void updateRoutePlanning();
+    void updateManeuver(QList<QGeoManeuver> maneuver);
 };
 
 #endif // MAPMANAGER_H

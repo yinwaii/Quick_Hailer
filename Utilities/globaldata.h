@@ -1,6 +1,7 @@
 #ifndef GLOBALDATA_H
 #define GLOBALDATA_H
 
+#include <QGeoCoordinate>
 #include <QMap>
 #include <QObject>
 #include <QVariant>
@@ -26,5 +27,6 @@ public:
     static int get_grid(int step, double lng, double lat);
     static double get_edge_lng(int step, int index);
     static double get_edge_lat(int step, int index);
+    static QGeoCoordinate get_coordinate(int step, int index);
 };
 #endif // GLOBALDATA_H

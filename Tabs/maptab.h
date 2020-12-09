@@ -21,6 +21,7 @@ public:
     ~MapTab();
 public slots:
     void loadMap();
+    void loadManeuver(QList<QGeoManeuver> maneuverList);
 
 private:
     Ui::MapTab *ui;

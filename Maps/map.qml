@@ -73,13 +73,14 @@ Rectangle {
                 id: mapGridRectangle
                 border.width: 1
 //                color: "red"
-                opacity: 1
+                opacity: 0.2
                 topLeft: QtPositioning.coordinate(grid.x,grid.y)
                 bottomRight: QtPositioning.coordinate(grid.x+grid.width,grid.y+grid.height)
                 MouseArea {
                     anchors.fill: mapGridRectangle
                     onPressed: {
-                        console.log("clicked")
+                        console.log("clicked",index)
+                        mapGridRectangle.color="red"
                     }
                 }
             }
@@ -92,28 +93,82 @@ Rectangle {
 
             delegate: MapPolyline {
                 id: mapConnectionLine
-                line.width: 1
+                line.width: 2
                 line.color: "black"
-                path: [origin,destination]
+//                opacity: count
+//                path: [origin,destination]
+                path:(index<mapManager.coordinateList.length)?mapManager.coordinateList[index].paths:[]
                 Component.onCompleted: {
-                    console.log(origin,destination)
+//                    console.log(origin,destination)
+                    console.log(index)
+
                 }
             }
+//            delegate:MapRoute {
+//                id:mapConnectionRoute
+//                route: routes
+//                line.color: "blue"
+//                line.width: 1
+//                smooth: true
+//                opacity: 0.8
+//                Component.onCompleted: {
+//                }
+//            }
         }
+//        MapItemView {
+//                        model: RouteModel {
+//                            id: mapConnectionRouteModel
+//                            plugin: mapPlugin
+//                            autoUpdate: false
+//                            query: mapConnectionRouteQuery
+//                        }
+//                        RouteQuery {
+//                            id:mapConnectionRouteQuery
+//                            travelModes: RouteQuery.MostEconomicRoute
+//                            Component.onCompleted: {
+//                                console.log(waypoints)
+//                                mapConnectionRouteModel.update()
+//                            }
+//                        }
+
+//                        delegate: MapRoute {
+//                            route: routeData
+//                            line.color: "blue"
+//                            line.width: 1
+//                            smooth: true
+//                            opacity: 0.8
+//                            Component.onCompleted: {
+//                                mapConnectionModel.append({"routes":routeData})
+//                            }
+//                        }
+//                    }
         MapItemView{
             id: mapRouteView
             model: ListModel {
                 id: mapRouteModel
             }
 
-            delegate: MapPolyline {
+            delegate: MapItemGroup {
+                MapPolyline {
                 id: mapRouteLine
                 line.width: 1
                 line.color: "blue"
-                path: road
+                path: [origin,destination]
                 Component.onCompleted: {
-                    console.log(road)
+//                    console.log(origin,destination)
                 }
+            }
+//                MapQuickItem {
+//                        id:mapRouteMarker
+//                        sourceItem: Image{
+//                            id: mapRouteImage
+//                            source: "marker.png"
+
+//                        }
+//                        coordinate: QtPositioning.coordinate(origin.latitude,origin.longitude)
+//                        anchorPoint.x: image.width / 2
+//                        anchorPoint.y: image.height
+//                    }
             }
         }
         MapQuickItem {
@@ -150,6 +205,7 @@ Rectangle {
             id:mapManager
             objectName: "mapManager"
             onUpdateGrid: {
+                mapGridModel.clear()
                 for(var i=0;i<gridList.length;i++)
                     mapGridModel.append(gridList[i])
                 map.fitViewportToVisibleMapItems()
@@ -178,11 +234,18 @@ Rectangle {
             }
 
             onUpdateCoordinateList: {
+                mapRouteModel.clear()
                 for(var i=0;i<coordinateList.length;i++)
                 {
+//                    console.log(coordinateList[i],coordinateList[i].paths)
                     mapConnectionModel.append(coordinateList[i])
+//                                        mapConnectionRouteQuery.clearWaypoints()
+//                                        mapConnectionRouteQuery.addWaypoint(coordinateList[i].origin)
+//                                        mapConnectionRouteQuery.addWaypoint(coordinateList[i].destination)
+//                                        mapConnectionRouteModel.update()
+
                 }
-                map.fitViewportToVisibleMapItems()
+//                map.fitViewportToVisibleMapItems()
             }
 
             onUpdateSelectStatus: {
@@ -191,11 +254,18 @@ Rectangle {
             }
 
             onUpdateRoutePlanning: {
+                mapRouteModel.clear()
                 for(var i=0;i<coordinateList.length;i++)
                 {
                     mapRouteModel.append(coordinateList[i])
-                    console.log(coordinateList[i])
+//                    mapConnectionRouteQuery.clearWaypoints()
+//                    mapConnectionRouteQuery.addWaypoint(coordinateList[i].origin)
+//                    mapConnectionRouteQuery.addWaypoint(coordinateList[i].destination)
+//                    mapConnectionRouteModel.update()
+//                    console.log(coordinateList[i])
                 }
+
+//                mapRouteModel.insert(coordinateList[coordinateList.length-1])
 //                console.log(coordinateList)
             }
         }

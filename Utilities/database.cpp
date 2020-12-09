@@ -371,7 +371,7 @@ QVariantList DataBase::getEntryExit(double start, double end, int step)
     return result;
 }
 
-QVariantList DataBase::getRoute(double time)
+QVariantList DataBase::getRoute(double time, int step)
 {
     emit statusText("Opening the database to get route...");
     if (!db.open()) {
@@ -384,15 +384,37 @@ QVariantList DataBase::getRoute(double time)
                                .arg(time)
                                .arg(time);
     QSqlQuery query(commandRoute, db);
+    QMap<QPair<int, int>, int> routeMap;
     while (query.next()) {
-        QVariantMap tmp;
         QGeoCoordinate origin = {query.value(query.record().indexOf("orig_lat")).toDouble(),
                                  query.value(query.record().indexOf("orig_lng")).toDouble()};
         QGeoCoordinate destination = {query.value(query.record().indexOf("dest_lat")).toDouble(),
                                       query.value(query.record().indexOf("dest_lng")).toDouble()};
-        tmp["origin"] = QVariant::fromValue(origin);
-        tmp["destination"] = QVariant::fromValue(destination);
-        result.push_back(tmp);
+        QPair<int, int> tmpRouteGrid = qMakePair(
+            GlobalData::globalData.get_grid(step, origin.longitude(), origin.latitude()),
+            GlobalData::globalData.get_grid(step, destination.longitude(), destination.latitude()));
+        if (routeMap.contains(tmpRouteGrid))
+            routeMap[tmpRouteGrid]++;
+        else
+            routeMap[tmpRouteGrid] = 0;
+        //        tmp["origin"] = QVariant::fromValue(origin);
+        //        tmp["destination"] = QVariant::fromValue(destination);
+        //        result.push_back(tmp);
+    }
+    int routeMax = 0;
+    foreach (int routeCount, routeMap.values()) {
+        if (routeCount > routeMax)
+            routeMax = routeCount;
+    }
+    foreach (auto routePoint, routeMap.keys()) {
+        QVariantMap tmp;
+        tmp["origin"] = QVariant::fromValue(
+            GlobalData::globalData.get_coordinate(step, routePoint.first));
+        tmp["destination"] = QVariant::fromValue(
+            GlobalData::globalData.get_coordinate(step, routePoint.second));
+        tmp["count"] = double(routeMap[routePoint]) / double(routeMax);
+        if (tmp["count"] > 0.4)
+            result.push_back(tmp);
     }
     db.close();
     return result;

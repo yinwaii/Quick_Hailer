@@ -9,7 +9,7 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    //    qRegisterMetaType<MapGrid>("MapGrid");
+    //    qRegisterMetaType<QGeoRoute>("Route");
     //    qRegisterMetaType<QList<MapGrid>>("QList<MapGrid>");
     //    qmlRegisterType<MapGrid>("MapGrid", 1, 0, "MapGrid");
     //    qmlRegisterType<MapGridModel>("MapGridModel", 1, 0, "MapGridModel");

@@ -52,3 +52,13 @@ double GlobalData::get_edge_lat(int step, int index)
     double latStepLength = (lat_max - lat_min) / double(step);
     return lat_min + latStepLength * index;
 }
+
+QGeoCoordinate GlobalData::get_coordinate(int step, int index)
+{
+    QGeoCoordinate result;
+    result.setLongitude((get_edge_lng(step, index % step) + get_edge_lng(step, (index % step) + 1))
+                        / 2);
+    result.setLatitude((get_edge_lat(step, index / step) + get_edge_lat(step, (index / step) + 1))
+                       / 2);
+    return result;
+}

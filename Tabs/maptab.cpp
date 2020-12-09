@@ -16,6 +16,7 @@ MapTab::MapTab(QWidget *parent) :
             &QPushButton::clicked,
             managerRoute,
             &MapManager::selectPlanning);
+    connect(managerRoute, &MapManager::updateManeuver, this, &MapTab::loadManeuver);
 }
 
 void MapTab::loadMap()
@@ -30,7 +31,7 @@ void MapTab::loadMap()
     //    managerThermalDestination->updateHeatExit(ui->editThermalTimeFrom->dateTime().toTime_t(),
     //                                              ui->editThermalTimeTo->dateTime().toTime_t(),
     //                                              30);
-    //    managerFlow->updateRoute(ui->editFlowTimeTo->dateTime().toTime_t());
+    managerFlow->updateRoute(ui->editFlowTimeTo->dateTime().toTime_t(), 50);
     //    managerRoute->updateModel();
     //    managerThermalOrigin->initGrids();
     //    managerThermalDestination->initGrids();
@@ -40,6 +41,14 @@ void MapTab::loadMap()
     //        ->findChild<MapManager *>("mapManager")
     //        ->updateHeat(ui->editThermalTimeFrom->dateTime().toTime_t(),
     //                     ui->editThermalTimeTo->dateTime().toTime_t());
+}
+
+void MapTab::loadManeuver(QList<QGeoManeuver> maneuverList)
+{
+    ui->listRoute->clear();
+    foreach (QGeoManeuver maneuver, maneuverList) {
+        ui->listRoute->addItem(maneuver.instructionText());
+    }
 }
 
 MapTab::~MapTab()

@@ -16,6 +16,7 @@ MapManager::MapManager(QObject *parent) : QObject(parent), rm(), m_selectStatus(
 {
     //    assert(widget != nullptr);
     connect(&rm, &RouteManager::updateLine, this, &MapManager::selectedPlanning);
+    connect(&rm, &RouteManager::updateFlow, this, &MapManager::updatedRoute);
 }
 
 QVariantList MapManager::gridList() const
@@ -96,11 +97,11 @@ void MapManager::updateHeatExit(double start, double end, int step)
     emit updateGridList();
 }
 
-void MapManager::updateRoute(double time)
-{
-    m_coordinateList = DataBase::dataBase.getRoute(time);
-    emit updateCoordinateList();
-}
+//void MapManager::updateRoute(double time, int step)
+//{
+//    m_coordinateList = DataBase::dataBase.getRoute(time, step);
+//    emit updateCoordinateList();
+//}
 
 void MapManager::selectFrom()
 {
@@ -127,32 +128,42 @@ void MapManager::selectedPlanning()
 {
     m_coordinateList.clear();
     QVariantMap tmp;
-    foreach (QGeoCoordinate coord, rm.getPath())
-        m_coordinateList.push_back(QVariant::fromValue(coord));
-    tmp["road"] = m_coordinateList;
-    m_coordinateList.clear();
-    m_coordinateList.push_back(tmp);
+    for (int i = 1; i < rm.getPath().length(); i++) {
+        tmp["origin"] = QVariant::fromValue(rm.getPath()[i - 1]);
+        tmp["destination"] = QVariant::fromValue(rm.getPath()[i]);
+        m_coordinateList.push_back(tmp);
+    }
     foreach (QGeoManeuver maneuver, rm.getManeuver()) {
         qDebug() << maneuver.instructionText() << maneuver.distanceToNextInstruction();
     }
     emit updateRoutePlanning();
+    emit updateManeuver(rm.getManeuver());
 }
-//void MapManager::updateRoute(double time)
-//{
-//    m_coordinateList.clear();
-//    QVariantList routes = DataBase::dataBase.getRoute(time);
-//    routeCount = routes.length();
-//    foreach (QVariant route, routes) {
-//        rm.setRoute(route.toMap()["origin"].value<QGeoCoordinate>(),
-//                    route.toMap()["destination"].value<QGeoCoordinate>());
-//    }
-//}
+void MapManager::updateRoute(double time, int step)
+{
+    m_coordinateList.clear();
+    QVariantList routes = DataBase::dataBase.getRoute(time, step);
+    routeCount = routes.length();
+    foreach (QVariant route, routes) {
+        rm.setRoute(route.toMap()["origin"].value<QGeoCoordinate>(),
+                    route.toMap()["destination"].value<QGeoCoordinate>(),
+                    1);
+    }
+}
 
-//void MapManager::updatedRoute()
-//{
-//    m_coordinateList.push_back(QVariant::fromValue(rm.getPath()));
-//    qDebug() << "updated" << routeCount;
-//    routeCount--;
-//    if (routeCount == 0)
-//        emit updateCoordinateList();
-//}
+void MapManager::updatedRoute()
+{
+    //    m_coordinateList.push_back(QVariant::fromValue(rm.getPath()));
+    QVariantMap tmp;
+    //    tmp["routes"] = QVariant::fromValue(rm.getRoute());
+    QVariantList list;
+    foreach (QGeoCoordinate geo, rm.getPath()) {
+        list.push_back(QVariant::fromValue(geo));
+    }
+    tmp["paths"] = list;
+    m_coordinateList.push_back(tmp);
+    qDebug() << "updated" << routeCount;
+    routeCount--;
+    if (routeCount % 10 == 0)
+        emit updateCoordinateList();
+}
