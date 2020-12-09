@@ -28,40 +28,45 @@
       </attribute>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
-        <widget class="QQuickWidget" name="quickWidget">
+        <widget class="QQuickWidget" name="containerRouteBased">
          <property name="resizeMode">
           <enum>QQuickWidget::SizeRootObjectToView</enum>
+         </property>
+         <property name="source">
+          <url>
+           <string>qrc:/Maps/map.qml</string>
+          </url>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="Line" name="line">
+        <widget class="Line" name="lineRouteBased">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
         </widget>
        </item>
        <item>
-        <layout class="QGridLayout" name="layoutRoute">
+        <layout class="QGridLayout" name="layoutRouteBased">
          <item row="2" column="0" colspan="2">
-          <widget class="QPushButton" name="buttonRoutePlanning">
+          <widget class="QPushButton" name="buttonRoutePredict">
            <property name="text">
             <string>Predict</string>
            </property>
           </widget>
          </item>
          <item row="3" column="0">
-          <widget class="QLabel" name="labelRoute">
+          <widget class="QLabel" name="labelRouteIdea">
            <property name="text">
             <string>Idea</string>
            </property>
            <property name="buddy">
-            <cstring>listRoute</cstring>
+            <cstring>listRouteIdea</cstring>
            </property>
           </widget>
          </item>
          <item row="5" column="0" colspan="2">
-          <widget class="QListWidget" name="listRoute">
+          <widget class="QListWidget" name="listRouteIdea">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
              <horstretch>0</horstretch>
@@ -71,7 +76,7 @@
           </widget>
          </item>
          <item row="1" column="0" colspan="2">
-          <layout class="QGridLayout" name="gridLayout_2">
+          <layout class="QGridLayout" name="layoutRouteCheck">
            <item row="1" column="1">
             <widget class="QLineEdit" name="editRouteDestination"/>
            </item>
@@ -126,40 +131,45 @@
       </attribute>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
-        <widget class="QQuickWidget" name="quickWidget_2">
+        <widget class="QQuickWidget" name="containerSpaceBased">
          <property name="resizeMode">
           <enum>QQuickWidget::SizeRootObjectToView</enum>
+         </property>
+         <property name="source">
+          <url>
+           <string>qrc:/Maps/map.qml</string>
+          </url>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="Line" name="line_2">
+        <widget class="Line" name="lineSpaceBased">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
         </widget>
        </item>
        <item>
-        <layout class="QGridLayout" name="layoutRoute_2">
+        <layout class="QGridLayout" name="layoutSpaceBased">
          <item row="2" column="0" colspan="2">
-          <widget class="QPushButton" name="buttonRoutePlanning_2">
+          <widget class="QPushButton" name="buttonSpacePredict">
            <property name="text">
             <string>Predict</string>
            </property>
           </widget>
          </item>
          <item row="3" column="0">
-          <widget class="QLabel" name="labelRoute_2">
+          <widget class="QLabel" name="labelSpaceIdea">
            <property name="text">
-            <string>Route</string>
+            <string>Idea</string>
            </property>
            <property name="buddy">
-            <cstring>listRoute</cstring>
+            <cstring>listRouteIdea</cstring>
            </property>
           </widget>
          </item>
          <item row="5" column="0" colspan="2">
-          <widget class="QListWidget" name="listRoute_2">
+          <widget class="QListWidget" name="listSpaceIdea">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
              <horstretch>0</horstretch>
@@ -169,29 +179,29 @@
           </widget>
          </item>
          <item row="1" column="0" colspan="2">
-          <layout class="QGridLayout" name="gridLayout_3">
+          <layout class="QGridLayout" name="layoutSpaceCheck">
            <item row="1" column="1">
-            <widget class="QLineEdit" name="editRouteDestination_2"/>
+            <widget class="QLineEdit" name="editSpaceTime"/>
            </item>
            <item row="1" column="0">
-            <widget class="QLabel" name="labelRouteDestination_2">
+            <widget class="QLabel" name="labelSpaceTime">
              <property name="text">
               <string>Time</string>
              </property>
             </widget>
            </item>
            <item row="0" column="0">
-            <widget class="QLabel" name="labelRouteOrigin_2">
+            <widget class="QLabel" name="labelSpaceOrigin">
              <property name="text">
               <string>Origin</string>
              </property>
             </widget>
            </item>
            <item row="0" column="1">
-            <widget class="QLineEdit" name="editRouteOrigin_2"/>
+            <widget class="QLineEdit" name="editSpaceOrigin"/>
            </item>
-           <item row="1" column="2">
-            <widget class="QPushButton" name="buttonRouteDestination_2">
+           <item row="0" column="2">
+            <widget class="QPushButton" name="buttonSpaceOrigin">
              <property name="text">
               <string/>
              </property>
@@ -201,14 +211,13 @@
              </property>
             </widget>
            </item>
-           <item row="0" column="2">
-            <widget class="QPushButton" name="buttonRouteOrigin_2">
+           <item row="1" column="2">
+            <widget class="QLabel" name="labelSpaceTimeCount">
              <property name="text">
-              <string/>
+              <string>min</string>
              </property>
-             <property name="icon">
-              <iconset resource="../resources.qrc">
-               <normaloff>:/Maps/marker.png</normaloff>:/Maps/marker.png</iconset>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
              </property>
             </widget>
            </item>

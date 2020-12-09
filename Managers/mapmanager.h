@@ -56,6 +56,8 @@ public slots:
     void selectPlanning();
     void selectedPlanning();
     void updatedRoute();
+    void predictRoute();
+    void predictSpace(int time);
 signals:
     void updateGrid();
     void updateHeatEntry();
@@ -67,6 +69,9 @@ signals:
     void updateSelectStatus();
     void updateRoutePlanning();
     void updateManeuver(QList<QGeoManeuver> maneuver);
+    void updateDots();
+    void updateRouteIdeas(QVariantList ideaList);
+    void updateSpaceIdeas(QVariantList ideaList);
 };
 
 #endif // MAPMANAGER_H

@@ -420,6 +420,78 @@ QVariantList DataBase::getRoute(double time, int step)
     return result;
 }
 
+QVariantList DataBase::getRelateTime(QGeoCoordinate origin, QGeoCoordinate destination)
+{
+    emit statusText("Opening the database to predict routes...");
+    if (!db.open()) {
+        QMessageBox::warning(nullptr, "warning", "Can't create the database! ");
+        assert(0);
+    }
+    QVariantList result;
+    QString commandRoute = QString("SELECT * FROM dataset WHERE orig_lat >= %1 AND orig_lat <= %2 "
+                                   "AND orig_lng >= %3 AND orig_lng <= %4 AND dest_lat >= %5 AND "
+                                   "dest_lat <= %6 AND dest_lng >= %7 AND dest_lng <= %8")
+                               .arg(origin.latitude() - 0.005)
+                               .arg(origin.latitude() + 0.005)
+                               .arg(origin.longitude() - 0.005)
+                               .arg(origin.longitude() + 0.005)
+                               .arg(destination.latitude() - 0.005)
+                               .arg(destination.latitude() + 0.005)
+                               .arg(destination.longitude() - 0.005)
+                               .arg(destination.longitude() + 0.005);
+    //    qDebug() << commandRoute;
+    QSqlQuery query(commandRoute, db);
+    while (query.next()) {
+        QVariantMap tmp;
+        QGeoCoordinate origin = {query.value(query.record().indexOf("orig_lat")).toDouble(),
+                                 query.value(query.record().indexOf("orig_lng")).toDouble()};
+        QGeoCoordinate destination = {query.value(query.record().indexOf("dest_lat")).toDouble(),
+                                      query.value(query.record().indexOf("dest_lng")).toDouble()};
+        tmp["origin"] = QVariant::fromValue(origin);
+        tmp["destination"] = QVariant::fromValue(destination);
+        tmp["time"] = query.value(query.record().indexOf("time"));
+        tmp["fee"] = query.value(query.record().indexOf("fee"));
+        //        qDebug() << "get" << tmp;
+        result.push_back(tmp);
+    }
+    return result;
+}
+
+QVariantList DataBase::getRelateSpace(QGeoCoordinate origin, double time)
+{
+    emit statusText("Opening the database to predict space...");
+    if (!db.open()) {
+        QMessageBox::warning(nullptr, "warning", "Can't create the database! ");
+        assert(0);
+    }
+    QVariantList result;
+    qDebug() << origin << time;
+    QString commandRoute = QString(
+                               "SELECT * FROM dataset WHERE orig_lat >= %1 AND orig_lat <= %2 "
+                               "AND orig_lng >= %3 AND orig_lng <= %4 AND time >= %5 AND time <=%6")
+                               .arg(origin.latitude() - 0.005)
+                               .arg(origin.latitude() + 0.005)
+                               .arg(origin.longitude() - 0.005)
+                               .arg(origin.longitude() + 0.005)
+                               .arg(time * 60 - 20)
+                               .arg(time * 60 + 20);
+    qDebug() << commandRoute;
+    QSqlQuery query(commandRoute, db);
+    while (query.next()) {
+        QVariantMap tmp;
+        QGeoCoordinate origin = {query.value(query.record().indexOf("orig_lat")).toDouble(),
+                                 query.value(query.record().indexOf("orig_lng")).toDouble()};
+        QGeoCoordinate destination = {query.value(query.record().indexOf("dest_lat")).toDouble(),
+                                      query.value(query.record().indexOf("dest_lng")).toDouble()};
+        tmp["origin"] = QVariant::fromValue(origin);
+        tmp["destination"] = QVariant::fromValue(destination);
+        tmp["time"] = query.value(query.record().indexOf("time"));
+        tmp["fee"] = query.value(query.record().indexOf("fee"));
+        result.push_back(tmp);
+    }
+    return result;
+}
+
 DataBase::~DataBase()
 {
     //    db.removeDatabase("ride_hailing_data");

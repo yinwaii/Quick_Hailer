@@ -171,6 +171,39 @@ Rectangle {
 //                    }
             }
         }
+
+        MapItemView{
+            id: mapDotsView
+            model: ListModel {
+                id: mapDotsModel
+            }
+
+            delegate: MapItemGroup {
+                MapQuickItem {
+                        id:mapDotsOriginMarker
+                        sourceItem: Image{
+                            id: mapDotsOriginImage
+                            source: "marker.png"
+
+                        }
+                        coordinate: QtPositioning.coordinate(origin.latitude,origin.longitude)
+                        anchorPoint.x: image.width / 2
+                        anchorPoint.y: image.height
+                    }
+                MapQuickItem {
+                        id:mapDotsDestinationMarker
+                        sourceItem: Image{
+                            id: mapDotsDestinationImage
+                            source: "marker.png"
+
+                        }
+                        coordinate: QtPositioning.coordinate(destination.latitude,destination.longitude)
+                        anchorPoint.x: image.width / 2
+                        anchorPoint.y: image.height
+                    }
+            }
+        }
+
         MapQuickItem {
                 id:marker
                 visible: false
@@ -267,6 +300,14 @@ Rectangle {
 
 //                mapRouteModel.insert(coordinateList[coordinateList.length-1])
 //                console.log(coordinateList)
+            }
+
+            onUpdateDots: {
+                mapDotsModel.clear()
+                for(var i=0;i<coordinateList.length;i++)
+                {
+                    mapDotsModel.append(coordinateList[i])
+                }
             }
         }
     }

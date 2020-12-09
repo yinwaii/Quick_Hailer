@@ -167,3 +167,18 @@ void MapManager::updatedRoute()
     if (routeCount % 10 == 0)
         emit updateCoordinateList();
 }
+
+void MapManager::predictRoute()
+{
+    m_coordinateList = DataBase::dataBase.getRelateTime(coordinateFrom(), coordinateTo());
+    emit updateDots();
+    emit updateRouteIdeas(m_coordinateList);
+    qDebug() << "updated";
+}
+
+void MapManager::predictSpace(int time)
+{
+    m_coordinateList = DataBase::dataBase.getRelateSpace(coordinateFrom(), time);
+    emit updateDots();
+    emit updateSpaceIdeas(m_coordinateList);
+}
