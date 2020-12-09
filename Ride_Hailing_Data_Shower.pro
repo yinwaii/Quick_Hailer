@@ -26,7 +26,6 @@ SOURCES += \
     Tabs/datatab.cpp \
     Tabs/maptab.cpp \
     Tabs/predictiontab.cpp \
-    Tabs/querytab.cpp \
     Managers/axismanager.cpp \
     Managers/chartmanager.cpp \
     Managers/seriesmanager.cpp
@@ -41,7 +40,6 @@ HEADERS += \
     Tabs/datatab.h \
     Tabs/maptab.h \
     Tabs/predictiontab.h \
-    Tabs/querytab.h \
     Managers/axismanager.h \
     Managers/chartmanager.h \
     Managers/seriesmanager.h
@@ -51,8 +49,7 @@ FORMS += \
     Windows/mainwindow.ui \
     Tabs/datatab.ui \
     Tabs/maptab.ui \
-    Tabs/predictiontab.ui \
-    Tabs/querytab.ui
+    Tabs/predictiontab.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

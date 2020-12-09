@@ -27,7 +27,7 @@
        <string notr="true">QTabWidget::tab-bar { alignment: center; } </string>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>2</number>
       </property>
       <widget class="DataTab" name="tabData">
        <property name="sizePolicy">
@@ -48,11 +48,6 @@
       <widget class="PredictionTab" name="tabPrediction">
        <attribute name="title">
         <string>Prediction Analysis</string>
-       </attribute>
-      </widget>
-      <widget class="QueryTab" name="tabQuery">
-       <attribute name="title">
-        <string>Query Analysis</string>
        </attribute>
       </widget>
      </widget>
@@ -88,12 +83,6 @@
    <class>MapTab</class>
    <extends>QWidget</extends>
    <header>Tabs/maptab.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QueryTab</class>
-   <extends>QWidget</extends>
-   <header>Tabs/querytab.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
