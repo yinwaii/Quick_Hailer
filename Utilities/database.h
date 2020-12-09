@@ -4,6 +4,7 @@
 #include <QApplication>
 #include <QDebug>
 #include <QDir>
+#include <QGeoCoordinate>
 #include <QMessageBox>
 #include <QObject>
 #include <QSqlDatabase>
@@ -26,6 +27,7 @@ public:
     void loadGrids();
     QVariantList getGrid();
     QVariantList getEntryExit(double start, double end, int step);
+    QVariantList getRoute(double time);
     int searchNum(QString command);
     QList<QVariant> search(QString command);
     QVariant searchTarget(QString command);

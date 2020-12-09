@@ -206,7 +206,114 @@
       </attribute>
       <layout class="QGridLayout" name="gridLayout_13">
        <item row="0" column="0">
-        <layout class="QGridLayout" name="plotTaxiFlow"/>
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QLabel" name="labelFlowTimeFrom">
+           <property name="text">
+            <string>From</string>
+           </property>
+           <property name="buddy">
+            <cstring>editFlowTimeFrom</cstring>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDateTimeEdit" name="editFlowTimeFrom">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="dateTime">
+            <datetime>
+             <hour>0</hour>
+             <minute>0</minute>
+             <second>0</second>
+             <year>2016</year>
+             <month>11</month>
+             <day>1</day>
+            </datetime>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="labelFlowTimeTo">
+           <property name="text">
+            <string>To</string>
+           </property>
+           <property name="buddy">
+            <cstring>editFlowTimeTo</cstring>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDateTimeEdit" name="editFlowTimeTo">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="dateTime">
+            <datetime>
+             <hour>12</hour>
+             <minute>0</minute>
+             <second>0</second>
+             <year>2016</year>
+             <month>11</month>
+             <day>1</day>
+            </datetime>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="labelFlowStep">
+           <property name="text">
+            <string>Step</string>
+           </property>
+           <property name="buddy">
+            <cstring>spinFlowStep</cstring>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="spinFlowStep">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="value">
+            <number>30</number>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="1" column="0">
+        <widget class="QQuickWidget" name="plotFlow">
+         <property name="resizeMode">
+          <enum>QQuickWidget::SizeRootObjectToView</enum>
+         </property>
+         <property name="source">
+          <url>
+           <string>qrc:/Maps/map.qml</string>
+          </url>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QSlider" name="sliderFlow">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>
@@ -215,54 +322,14 @@
        <string>Route Planning</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_16">
-       <item row="0" column="1">
-        <widget class="Line" name="lineRoute">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-        </widget>
-       </item>
        <item row="0" column="2">
         <layout class="QGridLayout" name="layoutRoute">
-         <item row="5" column="0" colspan="2">
-          <widget class="QListWidget" name="listRoute">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
+         <item row="2" column="0" colspan="2">
+          <widget class="QPushButton" name="buttonRoutePlanning">
+           <property name="text">
+            <string>Route Planning</string>
            </property>
           </widget>
-         </item>
-         <item row="1" column="0" colspan="2">
-          <layout class="QFormLayout" name="layoutRouteForm">
-           <item row="0" column="0">
-            <widget class="QLabel" name="labelRouteOrigin">
-             <property name="text">
-              <string>Origin</string>
-             </property>
-             <property name="buddy">
-              <cstring>comboRouteOrigin</cstring>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QComboBox" name="comboRouteOrigin"/>
-           </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="labelRouteDestination">
-             <property name="text">
-              <string>Destination</string>
-             </property>
-             <property name="buddy">
-              <cstring>comboRouteDestination</cstring>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1">
-            <widget class="QComboBox" name="comboRouteDestination"/>
-           </item>
-          </layout>
          </item>
          <item row="3" column="0">
           <widget class="QLabel" name="labelRoute">
@@ -274,12 +341,61 @@
            </property>
           </widget>
          </item>
-         <item row="2" column="0" colspan="2">
-          <widget class="QPushButton" name="buttonRoutePlanning">
-           <property name="text">
-            <string>Route Planning</string>
+         <item row="5" column="0" colspan="2">
+          <widget class="QListWidget" name="listRoute">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
            </property>
           </widget>
+         </item>
+         <item row="1" column="0" colspan="2">
+          <layout class="QGridLayout" name="gridLayout_2">
+           <item row="1" column="1">
+            <widget class="QLineEdit" name="editRouteDestination"/>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="labelRouteDestination">
+             <property name="text">
+              <string>Destination</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <widget class="QLabel" name="labelRouteOrigin">
+             <property name="text">
+              <string>Origin</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QLineEdit" name="editRouteOrigin"/>
+           </item>
+           <item row="1" column="2">
+            <widget class="QPushButton" name="buttonRouteDestination">
+             <property name="text">
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="../resources.qrc">
+               <normaloff>:/Maps/marker.png</normaloff>:/Maps/marker.png</iconset>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="2">
+            <widget class="QPushButton" name="buttonRouteOrigin">
+             <property name="text">
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="../resources.qrc">
+               <normaloff>:/Maps/marker.png</normaloff>:/Maps/marker.png</iconset>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </item>
         </layout>
        </item>
@@ -292,6 +408,13 @@
           <url>
            <string>qrc:/Maps/map.qml</string>
           </url>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="Line" name="lineRoute">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
          </property>
         </widget>
        </item>
@@ -308,6 +431,8 @@
    <header location="global">QtQuickWidgets/QQuickWidget</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

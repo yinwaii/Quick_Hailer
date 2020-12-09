@@ -10,7 +10,7 @@ DataTab::DataTab(QWidget *parent) : QWidget(parent), ui(new Ui::DataTab)
 DataTab::~DataTab()
 {
     delete ui;
-    delete chartDemandTime;
+    //    delete chartDemandTime;
 }
 
 void DataTab::printDemandTime()
@@ -157,10 +157,10 @@ void DataTab::printRevenue()
 void DataTab::updatePlots()
 {
     managerGrid->initGrids();
-    printDemandTime();
-    printDistribution();
-    printRevenue();
-    managerGrid->initGrids();
+    qDebug() << managerGrid->gridList();
+    //    printDemandTime();
+    //    printDistribution();
+    //    printRevenue();
     //        switch (ui->widgetData->currentIndex()) {
     //        case 0:
     //            printDemandTime();

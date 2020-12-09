@@ -1,6 +1,7 @@
 #ifndef ROUTEMANAGER_H
 #define ROUTEMANAGER_H
 
+#include <QDebug>
 #include <QGeoManeuver>
 #include <QGeoRouteSegment>
 #include <QGeoRoutingManager>
@@ -24,6 +25,8 @@ private:
 private slots:
     void routeCalculated(QGeoRouteReply *reply);
     void routeError(QGeoRouteReply *reply, QGeoRouteReply::Error error, const QString &errorString);
+signals:
+    void updateLine();
 };
 
 #endif // ROUTEMANAGER_H

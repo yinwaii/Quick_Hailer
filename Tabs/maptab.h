@@ -27,6 +27,7 @@ private:
     MapManager *managerRoute;
     MapManager *managerThermalOrigin;
     MapManager *managerThermalDestination;
+    MapManager *managerFlow;
 };
 
 #endif // MAPTAB_H

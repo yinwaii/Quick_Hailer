@@ -9,6 +9,13 @@ MapTab::MapTab(QWidget *parent) :
     managerRoute = MapManager::getManager(ui->plotRoute);
     managerThermalOrigin = MapManager::getManager(ui->plotThermalOrigin);
     managerThermalDestination = MapManager::getManager(ui->plotThernalDestination);
+    managerFlow = MapManager::getManager(ui->plotFlow);
+    connect(ui->buttonRouteOrigin, &QPushButton::clicked, managerRoute, &MapManager::selectFrom);
+    connect(ui->buttonRouteDestination, &QPushButton::clicked, managerRoute, &MapManager::selectTo);
+    connect(ui->buttonRoutePlanning,
+            &QPushButton::clicked,
+            managerRoute,
+            &MapManager::selectPlanning);
 }
 
 void MapTab::loadMap()
@@ -17,12 +24,13 @@ void MapTab::loadMap()
     //    qDebug() << lis;
     //    emit
     //    managerThermalOrigin->initGrids();
-    managerThermalOrigin->updateHeatEntry(ui->editThermalTimeFrom->dateTime().toTime_t(),
-                                          ui->editThermalTimeTo->dateTime().toTime_t(),
-                                          30);
-    managerThermalDestination->updateHeatExit(ui->editThermalTimeFrom->dateTime().toTime_t(),
-                                              ui->editThermalTimeTo->dateTime().toTime_t(),
-                                              30);
+    //    managerThermalOrigin->updateHeatEntry(ui->editThermalTimeFrom->dateTime().toTime_t(),
+    //                                          ui->editThermalTimeTo->dateTime().toTime_t(),
+    //                                          30);
+    //    managerThermalDestination->updateHeatExit(ui->editThermalTimeFrom->dateTime().toTime_t(),
+    //                                              ui->editThermalTimeTo->dateTime().toTime_t(),
+    //                                              30);
+    //    managerFlow->updateRoute(ui->editFlowTimeTo->dateTime().toTime_t());
     //    managerRoute->updateModel();
     //    managerThermalOrigin->initGrids();
     //    managerThermalDestination->initGrids();
@@ -36,8 +44,5 @@ void MapTab::loadMap()
 
 MapTab::~MapTab()
 {
-    delete managerRoute;
-    delete managerThermalOrigin;
-    delete managerThermalDestination;
     delete ui;
 }

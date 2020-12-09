@@ -219,7 +219,7 @@ void DataBase::loadGrids()
 
 int DataBase::searchNum(QString command)
 {
-    emit statusText("Opening the database ...");
+    emit statusText("Opening the database to get the num...");
     if (!db.open()) {
         QMessageBox::warning(nullptr, "warning", "Can't create the database! ");
         return -1;
@@ -238,7 +238,7 @@ int DataBase::searchNum(QString command)
 
 QList<QVariant> DataBase::search(QString command)
 {
-    emit statusText("Opening the database ...");
+    emit statusText("Opening the database to search...");
     if (!db.open()) {
         QMessageBox::warning(nullptr, "warning", "Can't create the database! ");
         assert(0);
@@ -257,7 +257,7 @@ QList<QVariant> DataBase::search(QString command)
 
 QVariant DataBase::searchTarget(QString command)
 {
-    emit statusText("Opening the database ...");
+    emit statusText("Opening the database to get the target...");
     if (!db.open()) {
         QMessageBox::warning(nullptr, "warning", "Can't create the database! ");
         assert(0);
@@ -275,7 +275,7 @@ QVariant DataBase::searchTarget(QString command)
 
 QVariantList DataBase::getGrid()
 {
-    emit statusText("Opening the database ...");
+    emit statusText("Opening the database to get grids...");
     if (!db.open()) {
         QMessageBox::warning(nullptr, "warning", "Can't create the database! ");
         assert(0);
@@ -303,7 +303,7 @@ QVariantList DataBase::getGrid()
 QVariantList DataBase::getEntryExit(double start, double end, int step)
 {
     int maxEntry = -1, maxExit = -1;
-    emit statusText("Opening the database ...");
+    emit statusText("Opening the database to get entry & exit...");
     if (!db.open()) {
         QMessageBox::warning(nullptr, "warning", "Can't create the database! ");
         assert(0);
@@ -371,7 +371,34 @@ QVariantList DataBase::getEntryExit(double start, double end, int step)
     return result;
 }
 
+QVariantList DataBase::getRoute(double time)
+{
+    emit statusText("Opening the database to get route...");
+    if (!db.open()) {
+        QMessageBox::warning(nullptr, "warning", "Can't create the database! ");
+        assert(0);
+    }
+    QVariantList result;
+    QString commandRoute = QString(
+                               "SELECT * FROM dataset WHERE departure_time < %1 AND end_time > %2")
+                               .arg(time)
+                               .arg(time);
+    QSqlQuery query(commandRoute, db);
+    while (query.next()) {
+        QVariantMap tmp;
+        QGeoCoordinate origin = {query.value(query.record().indexOf("orig_lat")).toDouble(),
+                                 query.value(query.record().indexOf("orig_lng")).toDouble()};
+        QGeoCoordinate destination = {query.value(query.record().indexOf("dest_lat")).toDouble(),
+                                      query.value(query.record().indexOf("dest_lng")).toDouble()};
+        tmp["origin"] = QVariant::fromValue(origin);
+        tmp["destination"] = QVariant::fromValue(destination);
+        result.push_back(tmp);
+    }
+    db.close();
+    return result;
+}
+
 DataBase::~DataBase()
 {
-    db.removeDatabase("ride_hailing_data");
+    //    db.removeDatabase("ride_hailing_data");
 }

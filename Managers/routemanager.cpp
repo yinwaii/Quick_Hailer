@@ -21,10 +21,10 @@ void RouteManager::setRoute(const QGeoCoordinate &origin, const QGeoCoordinate &
     request.setRouteOptimization(QGeoRouteRequest::MostEconomicRoute);
 
     QGeoRouteReply *reply = routingManager->calculateRoute(request);
-
     if (reply->isFinished()) {
         if (reply->error() == QGeoRouteReply::NoError) {
             routeCalculated(reply);
+            route = reply->routes();
         } else {
             routeError(reply, reply->error(), reply->errorString());
         }
@@ -59,6 +59,8 @@ void RouteManager::routeCalculated(QGeoRouteReply *reply)
         // ... but by default it will only get a single route
         //        QGeoRoute route = reply->routes().at(0);
         route = reply->routes();
+        qDebug() << "calculated" << reply->routes().length();
+        emit updateLine();
 
         //... now we have to make use of the route ...
     }
