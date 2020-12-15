@@ -158,9 +158,9 @@ void DataTab::updatePlots()
 {
     managerGrid->initGrids();
     qDebug() << managerGrid->gridList();
-    //    printDemandTime();
-    //    printDistribution();
-    //    printRevenue();
+    printDemandTime();
+    printDistribution();
+    printRevenue();
     //        switch (ui->widgetData->currentIndex()) {
     //        case 0:
     //            printDemandTime();

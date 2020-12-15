@@ -25,13 +25,13 @@ void MapTab::loadMap()
     //    qDebug() << lis;
     //    emit
     //    managerThermalOrigin->initGrids();
-    //    managerThermalOrigin->updateHeatEntry(ui->editThermalTimeFrom->dateTime().toTime_t(),
-    //                                          ui->editThermalTimeTo->dateTime().toTime_t(),
-    //                                          30);
-    //    managerThermalDestination->updateHeatExit(ui->editThermalTimeFrom->dateTime().toTime_t(),
-    //                                              ui->editThermalTimeTo->dateTime().toTime_t(),
-    //                                              30);
-    //    managerFlow->updateRoute(ui->editFlowTimeTo->dateTime().toTime_t(), 50);
+    managerThermalOrigin->updateHeatEntry(ui->editThermalTimeFrom->dateTime().toTime_t(),
+                                          ui->editThermalTimeTo->dateTime().toTime_t(),
+                                          30);
+    managerThermalDestination->updateHeatExit(ui->editThermalTimeFrom->dateTime().toTime_t(),
+                                              ui->editThermalTimeTo->dateTime().toTime_t(),
+                                              30);
+    managerFlow->updateRoute(ui->editFlowTimeTo->dateTime().toTime_t(), 50);
     //    managerRoute->updateModel();
     //    managerThermalOrigin->initGrids();
     //    managerThermalDestination->initGrids();

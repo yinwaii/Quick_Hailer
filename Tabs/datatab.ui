@@ -168,10 +168,16 @@
        <item row="0" column="0">
         <widget class="QQuickWidget" name="containerGrid">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>300</width>
+           <height>300</height>
+          </size>
          </property>
          <property name="resizeMode">
           <enum>QQuickWidget::SizeRootObjectToView</enum>
