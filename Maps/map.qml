@@ -79,8 +79,17 @@ Rectangle {
                 MouseArea {
                     anchors.fill: mapGridRectangle
                     onPressed: {
-                        console.log("clicked",index)
-                        mapGridRectangle.color="red"
+                        console.log("clicked",index,mapGridRectangle.color)
+                        if(mapGridRectangle.color=="#00000000")
+                        {
+                            mapManager.addGrid(index)
+                            mapGridRectangle.color="#ff0000"
+                        }
+                        else if(mapGridRectangle.color=="#ff0000")
+                        {
+                            mapManager.deleteGrid(index)
+                            mapGridRectangle.color="#00000000"
+                        }
                     }
                 }
             }

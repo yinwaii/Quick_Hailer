@@ -6,7 +6,7 @@ DataBase::DataBase(QObject *parent) : QObject(parent) {}
 void DataBase::init()
 {
     emit statusText("Creating the database ...");
-    db = QSqlDatabase::addDatabase("QSQLITE", "ride_hailing_data");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "ride_hailing_data");
     db.setDatabaseName(QApplication::applicationFilePath() + ".db");
     emit statusText("Opening the database ...");
     if (!db.open()) {
@@ -69,8 +69,15 @@ void DataBase::init()
     db.close();
     emit statusText("Successfully init the database!");
 }
+QSqlDatabase DataBase::get()
+{
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "ride_hailing_data");
+    db.setDatabaseName(QApplication::applicationFilePath() + ".db");
+    return db;
+}
 void DataBase::load()
 {
+    QSqlDatabase db = get();
     emit statusText("Opening the database ...");
     if (!db.open()) {
         qDebug() << "Can't create the database! ";
@@ -159,6 +166,7 @@ void DataBase::load()
 
 void DataBase::loadGrids()
 {
+    QSqlDatabase db = get();
     emit statusText("Opening the database ...");
     if (!db.open()) {
         qDebug() << "Can't create the database! ";
@@ -219,6 +227,7 @@ void DataBase::loadGrids()
 
 int DataBase::searchNum(QString command)
 {
+    QSqlDatabase db = get();
     emit statusText("Opening the database to get the num...");
     if (!db.open()) {
         QMessageBox::warning(nullptr, "warning", "Can't create the database! ");
@@ -236,8 +245,163 @@ int DataBase::searchNum(QString command)
     return result;
 }
 
+QVariantList DataBase::searchDemand(int start, int end, int step)
+{
+    QSqlDatabase db = get();
+    emit statusText("Opening the database to get the num...");
+    if (!db.open()) {
+        QMessageBox::warning(nullptr, "warning", "Can't create the database! ");
+        assert(0);
+    }
+    QString command = QString("SELECT * FROM dataset WHERE departure_time>%1 AND end_time<%2")
+                          .arg(start)
+                          .arg(end);
+    QSqlQuery query(command, db);
+    query.exec();
+    QVariantList result;
+    for (int i = 0; i < step; i++) {
+        QVariantMap stepMap;
+        stepMap["entry"] = 0;
+        stepMap["exit"] = 0;
+        result.push_back(stepMap);
+    }
+    while (query.next()) {
+        QVariantMap old_entry_map
+            = result[GlobalData::get_step(step,
+                                          query.value(query.record().indexOf("departure_time"))
+                                              .toDouble(),
+                                          start,
+                                          end)]
+                  .toMap();
+        int old_entry = old_entry_map["entry"].toInt();
+        old_entry_map["entry"] = old_entry + 1;
+        result[GlobalData::get_step(
+            step, query.value(query.record().indexOf("departure_time")).toDouble(), start, end)]
+            = old_entry_map;
+        QVariantMap old_exit_map
+            = result[GlobalData::get_step(step,
+                                          query.value(query.record().indexOf("end_time")).toDouble(),
+                                          start,
+                                          end)]
+                  .toMap();
+        int old_exit = old_exit_map["exit"].toInt();
+        old_exit_map["exit"] = old_exit + 1;
+        result[GlobalData::get_step(
+            step, query.value(query.record().indexOf("end_time")).toDouble(), start, end)]
+            = old_exit_map;
+    }
+    //    qDebug() << "result:" << result;
+    db.close();
+    return result;
+}
+
+QVariantList DataBase::searchDistribution(int start, int end, int time_max, double fee_max, int step)
+{
+    QSqlDatabase db = get();
+    emit statusText("Opening the database to get the num...");
+    if (!db.open()) {
+        QMessageBox::warning(nullptr, "warning", "Can't create the database! ");
+        assert(0);
+    }
+    QString command = QString("SELECT * FROM dataset WHERE departure_time>%1 AND departure_time<%2")
+                          .arg(start)
+                          .arg(end);
+    QSqlQuery query(command, db);
+    query.exec();
+    QVariantList result;
+    for (int i = 0; i < step; i++) {
+        QVariantMap stepMap;
+        stepMap["time"] = 0;
+        stepMap["fee"] = 0;
+        result.push_back(stepMap);
+    }
+    while (query.next()) {
+        if (GlobalData::get_step(step,
+                                 query.value(query.record().indexOf("time")).toDouble(),
+                                 0,
+                                 time_max)
+            < step) {
+            //            qDebug() << GlobalData::get_step(step,
+            //                                             query.value(query.record().indexOf("time")).toDouble(),
+            //                                             0,
+            //                                             time_max);
+            QVariantMap old_time_map
+                = result[GlobalData::get_step(step,
+                                              query.value(query.record().indexOf("time")).toDouble(),
+                                              0,
+                                              time_max)]
+                      .toMap();
+            int old_entry = old_time_map["time"].toInt();
+            old_time_map["time"] = old_entry + 1;
+            result[GlobalData::get_step(
+                step, query.value(query.record().indexOf("time")).toDouble(), 0, time_max)]
+                = old_time_map;
+        }
+        if (GlobalData::get_step(step,
+                                 query.value(query.record().indexOf("fee")).toDouble(),
+                                 0,
+                                 fee_max)
+            < step) {
+            //            qDebug() << GlobalData::get_step(step,
+            //                                             query.value(query.record().indexOf("fee")).toDouble(),
+            //                                             0,
+            //                                             fee_max);
+            QVariantMap old_fee_map
+                = result[GlobalData::get_step(
+                             step, query.value(query.record().indexOf("fee")).toDouble(), 0, fee_max)]
+                      .toMap();
+            int old_fee = old_fee_map["fee"].toInt();
+            old_fee_map["fee"] = old_fee + 1;
+            result[GlobalData::get_step(
+                step, query.value(query.record().indexOf("fee")).toDouble(), 0, fee_max)]
+                = old_fee_map;
+        }
+    }
+    //    qDebug() << "result:" << result;
+    db.close();
+    return result;
+}
+
+QVariantList DataBase::searchRevenue(int start, int end, int step)
+{
+    QSqlDatabase db = get();
+    emit statusText("Opening the database to get the num...");
+    if (!db.open()) {
+        QMessageBox::warning(nullptr, "warning", "Can't create the database! ");
+        assert(0);
+    }
+    QString command = QString("SELECT * FROM dataset WHERE departure_time>%1 AND end_time<%2")
+                          .arg(start)
+                          .arg(end);
+    QSqlQuery query(command, db);
+    query.exec();
+    QVariantList result;
+    for (int i = 0; i < step; i++) {
+        QVariantMap stepMap;
+        stepMap["fee"] = 0;
+        result.push_back(stepMap);
+    }
+    while (query.next()) {
+        QVariantMap old_fee_map
+            = result[GlobalData::get_step(step,
+                                          query.value(query.record().indexOf("end_time")).toDouble(),
+                                          start,
+                                          end)]
+                  .toMap();
+        double old_fee = old_fee_map["fee"].toDouble();
+        old_fee_map["fee"] = old_fee + query.value(query.record().indexOf("fee")).toDouble();
+        result[GlobalData::get_step(
+            step, query.value(query.record().indexOf("end_time")).toDouble(), start, end)]
+            = old_fee_map;
+    }
+    //    qDebug() << "result:" << result;
+    db.close();
+    return result;
+}
+
 QList<QVariant> DataBase::search(QString command)
 {
+    QSqlDatabase db = get();
     emit statusText("Opening the database to search...");
     if (!db.open()) {
         QMessageBox::warning(nullptr, "warning", "Can't create the database! ");
@@ -257,6 +421,7 @@ QList<QVariant> DataBase::search(QString command)
 
 QVariant DataBase::searchTarget(QString command)
 {
+    QSqlDatabase db = get();
     emit statusText("Opening the database to get the target...");
     if (!db.open()) {
         QMessageBox::warning(nullptr, "warning", "Can't create the database! ");
@@ -275,6 +440,7 @@ QVariant DataBase::searchTarget(QString command)
 
 QVariantList DataBase::getGrid()
 {
+    QSqlDatabase db = get();
     emit statusText("Opening the database to get grids...");
     if (!db.open()) {
         QMessageBox::warning(nullptr, "warning", "Can't create the database! ");
@@ -302,6 +468,7 @@ QVariantList DataBase::getGrid()
 
 QVariantList DataBase::getEntryExit(double start, double end, int step)
 {
+    QSqlDatabase db = get();
     int maxEntry = -1, maxExit = -1;
     emit statusText("Opening the database to get entry & exit...");
     if (!db.open()) {
@@ -373,6 +540,7 @@ QVariantList DataBase::getEntryExit(double start, double end, int step)
 
 QVariantList DataBase::getRoute(double time, int step)
 {
+    QSqlDatabase db = get();
     emit statusText("Opening the database to get route...");
     if (!db.open()) {
         QMessageBox::warning(nullptr, "warning", "Can't create the database! ");
@@ -422,6 +590,7 @@ QVariantList DataBase::getRoute(double time, int step)
 
 QVariantList DataBase::getRelateTime(QGeoCoordinate origin, QGeoCoordinate destination)
 {
+    QSqlDatabase db = get();
     emit statusText("Opening the database to predict routes...");
     if (!db.open()) {
         QMessageBox::warning(nullptr, "warning", "Can't create the database! ");
@@ -459,6 +628,7 @@ QVariantList DataBase::getRelateTime(QGeoCoordinate origin, QGeoCoordinate desti
 
 QVariantList DataBase::getRelateSpace(QGeoCoordinate origin, double time)
 {
+    QSqlDatabase db = get();
     emit statusText("Opening the database to predict space...");
     if (!db.open()) {
         QMessageBox::warning(nullptr, "warning", "Can't create the database! ");

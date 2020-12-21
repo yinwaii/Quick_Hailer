@@ -39,6 +39,8 @@ public:
     void updateHeatEntry(double start, double end, int step);
     void updateHeatExit(double start, double end, int step);
     void updateRoute(double time, int step);
+    Q_INVOKABLE void addGrid(int grid);
+    Q_INVOKABLE void deleteGrid(int grid);
 
 private:
     int routeCount;
@@ -49,6 +51,7 @@ private:
     QVariantList m_gridList;
     QPair<QGeoCoordinate, QGeoCoordinate> m_coordinateFromTo;
     QVariantList m_coordinateList;
+    QList<int> m_gridSelected;
     int m_selectStatus;
 public slots:
     void selectFrom();
@@ -72,6 +75,7 @@ signals:
     void updateDots();
     void updateRouteIdeas(QVariantList ideaList);
     void updateSpaceIdeas(QVariantList ideaList);
+    void updateDemandPlot();
 };
 
 #endif // MAPMANAGER_H

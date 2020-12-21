@@ -247,7 +247,7 @@
  <connections>
   <connection>
    <sender>editDataTimeTo</sender>
-   <signal>editingFinished()</signal>
+   <signal>timeChanged(QTime)</signal>
    <receiver>DataTab</receiver>
    <slot>updatePlots()</slot>
    <hints>
@@ -263,7 +263,7 @@
   </connection>
   <connection>
    <sender>editDataTimeFrom</sender>
-   <signal>editingFinished()</signal>
+   <signal>timeChanged(QTime)</signal>
    <receiver>DataTab</receiver>
    <slot>updatePlots()</slot>
    <hints>
@@ -279,7 +279,7 @@
   </connection>
   <connection>
    <sender>spinDataStep</sender>
-   <signal>editingFinished()</signal>
+   <signal>valueChanged(int)</signal>
    <receiver>DataTab</receiver>
    <slot>updatePlots()</slot>
    <hints>

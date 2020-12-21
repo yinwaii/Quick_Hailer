@@ -62,3 +62,16 @@ QGeoCoordinate GlobalData::get_coordinate(int step, int index)
                        / 2);
     return result;
 }
+
+int GlobalData::get_step(int step, double time, double start, double stop)
+{
+    double timeStepLength = (stop - start) / double(step);
+    int index = floor((time - start) / timeStepLength);
+    return index;
+}
+
+double GlobalData::get_time(int step, int index, double start, double stop)
+{
+    double timeStepLength = (stop - start) / double(step);
+    return start + timeStepLength * index;
+}

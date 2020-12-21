@@ -182,3 +182,17 @@ void MapManager::predictSpace(int time)
     emit updateDots();
     emit updateSpaceIdeas(m_coordinateList);
 }
+
+void MapManager::addGrid(int grid)
+{
+    m_gridSelected.push_back(grid);
+    qDebug() << m_gridSelected;
+    emit updateDemandPlot();
+}
+
+void MapManager::deleteGrid(int grid)
+{
+    m_gridSelected.removeAt(m_gridSelected.indexOf(grid));
+    qDebug() << m_gridSelected;
+    emit updateDemandPlot();
+}

@@ -48,6 +48,7 @@ void ChartManager::load()
     if (!title.isNull())
         chart->setTitle(title);
     chartView = new QChartView(chart);
+    qDebug() << "Setting the chartView ...";
     QSizePolicy policy = chartView->sizePolicy();
     policy.setVerticalPolicy(QSizePolicy::Expanding);
     policy.setHorizontalPolicy(QSizePolicy::Expanding);

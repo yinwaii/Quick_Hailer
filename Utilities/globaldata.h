@@ -28,5 +28,7 @@ public:
     static double get_edge_lng(int step, int index);
     static double get_edge_lat(int step, int index);
     static QGeoCoordinate get_coordinate(int step, int index);
+    static int get_step(int step, double time, double start, double stop);
+    static double get_time(int step, int index, double start, double stop);
 };
 #endif // GLOBALDATA_H

@@ -24,18 +24,16 @@ void DataTab::printDemandTime()
     //    QList<QPointF> pointsDemandTime;
     int timeStart = ui->editDataTimeFrom->dateTime().toTime_t();
     int timeStop = ui->editDataTimeTo->dateTime().toTime_t();
+    QVariantList dataDemand = DataBase::dataBase.searchDemand(timeStart,
+                                                              timeStop,
+                                                              ui->spinDataStep->value());
+    qDebug() << dataDemand;
     //    DataBase::dataBase.searchNum("SELECT * FROM dataset");
     for (int step = 0; step < ui->spinDataStep->value(); step++) {
         int stepStart = timeStart + (timeStop - timeStart) * step / ui->spinDataStep->value();
         int stepStop = timeStart + (timeStop - timeStart) * (step + 1) / ui->spinDataStep->value();
-        int entry = DataBase::dataBase.searchNum(
-            QString("SELECT * FROM dataset WHERE departure_time>%1 AND departure_time<%2")
-                .arg(stepStart)
-                .arg(stepStop));
-        int exit = DataBase::dataBase.searchNum(
-            QString("SELECT * FROM dataset WHERE end_time>%1 AND end_time<%2")
-                .arg(stepStart)
-                .arg(stepStop));
+        int entry = dataDemand[step].toMap()["entry"].toInt();
+        int exit = dataDemand[step].toMap()["exit"].toInt();
         int flow = entry - exit;
         //        qDebug() << double(stepStop - stepStart) << double(entry) / double(stepStop - stepStart);
         chartDemandTime->getSeries()->addCache("DateTime",
@@ -78,25 +76,35 @@ void DataTab::printDistribution()
     double timeCount = 0;
     double feeCount = 0;
     double changedstep = ui->spinDataStep->value() / 80 * 300;
+    QVariantList dataDistribution
+        = DataBase::dataBase.searchDistribution(ui->editDataTimeFrom->dateTime().toTime_t(),
+                                                ui->editDataTimeTo->dateTime().toTime_t(),
+                                                maxTime,
+                                                maxFee,
+                                                changedstep);
+    qDebug() << dataDistribution;
     for (int step = 0; step < changedstep; step++) {
         double timeStart = maxTime * double(step) / changedstep;
         double timeStop = maxTime * double(step + 1) / changedstep;
         double feeStart = maxFee * double(step) / changedstep;
         double feeStop = maxFee * double(step + 1) / changedstep;
-        int numberTime = DataBase::dataBase.searchNum(
-            QString("SELECT * FROM dataset WHERE time>%1 AND time<%2 AND "
-                    "departure_time>%3 AND departure_time<%4")
-                .arg(timeStart)
-                .arg(timeStop)
-                .arg(ui->editDataTimeFrom->dateTime().toTime_t())
-                .arg(ui->editDataTimeTo->dateTime().toTime_t()));
-        int numberFee = DataBase::dataBase.searchNum(
-            QString("SELECT * FROM dataset WHERE fee>%1 AND fee<%2 AND "
-                    "departure_time>%3 AND departure_time<%4")
-                .arg(feeStart)
-                .arg(feeStop)
-                .arg(ui->editDataTimeFrom->dateTime().toTime_t())
-                .arg(ui->editDataTimeTo->dateTime().toTime_t()));
+        //        int numberTime = DataBase::dataBase.searchNum(
+        //            QString("SELECT * FROM dataset WHERE time>%1 AND time<%2 AND "
+        //                    "departure_time>%3 AND departure_time<%4")
+        //                .arg(timeStart)
+        //                .arg(timeStop)
+        //                .arg(ui->editDataTimeFrom->dateTime().toTime_t())
+        //                .arg(ui->editDataTimeTo->dateTime().toTime_t()));
+        //        int numberFee = DataBase::dataBase.searchNum(
+        //            QString("SELECT * FROM dataset WHERE fee>%1 AND fee<%2 AND "
+        //                    "departure_time>%3 AND departure_time<%4")
+        //                .arg(feeStart)
+        //                .arg(feeStop)
+        //                .arg(ui->editDataTimeFrom->dateTime().toTime_t())
+        //                .arg(ui->editDataTimeTo->dateTime().toTime_t()));
+        int numberTime = dataDistribution[step].toMap()["time"].toInt();
+        int numberFee = dataDistribution[step].toMap()["fee"].toInt();
+        //        qDebug() << numberTime << numberTime_1 << numberFee << numberFee_1;
         timeCount += numberTime;
         feeCount += numberFee;
         //        qDebug() << feeCount;
@@ -138,15 +146,13 @@ void DataTab::printRevenue()
                             AxisManager::internal_date);
     int timeStart = ui->editDataTimeFrom->dateTime().toTime_t();
     int timeStop = ui->editDataTimeTo->dateTime().toTime_t();
+    QVariantList dataRevenue = DataBase::dataBase.searchRevenue(timeStart,
+                                                                timeStop,
+                                                                ui->spinDataStep->value());
     for (int step = 0; step < ui->spinDataStep->value(); step++) {
         int stepStart = timeStart + (timeStop - timeStart) * step / ui->spinDataStep->value();
         int stepStop = timeStart + (timeStop - timeStart) * (step + 1) / ui->spinDataStep->value();
-        double revenue = DataBase::dataBase
-                             .searchTarget(QString("SELECT SUM(fee) AS Target FROM dataset WHERE "
-                                                   "end_time>%1 AND end_time<%2")
-                                               .arg(stepStart)
-                                               .arg(stepStop))
-                             .toDouble();
+        double revenue = dataRevenue[step].toMap()["fee"].toDouble();
         chartRevenue->getSeries()->addCache("DateTime",
                                             (stepStart / 2.0 + stepStop / 2.0) * 1000,
                                             {double(revenue) * 3600 / (stepStop - stepStart)});
@@ -158,19 +164,19 @@ void DataTab::updatePlots()
 {
     managerGrid->initGrids();
     qDebug() << managerGrid->gridList();
-    printDemandTime();
-    printDistribution();
-    printRevenue();
-    //        switch (ui->widgetData->currentIndex()) {
-    //        case 0:
-    //            printDemandTime();
-    //            break;
-    //        case 1:
-    //            printDistribution();
-    //            break;
-    //        case 2:
-    //            printRevenue();
-    //        }
+    //    printDemandTime();
+    //    printDistribution();
+    //    printRevenue();
+    switch (ui->widgetData->currentIndex()) {
+    case 0:
+        printDemandTime();
+        break;
+    case 1:
+        printDistribution();
+        break;
+    case 2:
+        printRevenue();
+    }
     //    QThread *printCharts = QThread::create([this] {
     //        switch (ui->widgetData->currentIndex()) {
     //        case 0:

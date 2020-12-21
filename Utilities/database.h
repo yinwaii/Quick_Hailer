@@ -17,11 +17,12 @@ class DataBase : public QObject
 {
     Q_OBJECT
 private:
-    QSqlDatabase db;
+    //    QSqlDatabase db;
 
 public:
     static DataBase dataBase;
     explicit DataBase(QObject *parent = nullptr);
+    QSqlDatabase get();
     void init();
     void load();
     void loadGrids();
@@ -31,6 +32,9 @@ public:
     QVariantList getRelateTime(QGeoCoordinate origin, QGeoCoordinate destination);
     QVariantList getRelateSpace(QGeoCoordinate origin, double time);
     int searchNum(QString command);
+    QVariantList searchDemand(int start, int end, int step);
+    QVariantList searchDistribution(int start, int end, int time_max, double fee_max, int step);
+    QVariantList searchRevenue(int start, int end, int step);
     QList<QVariant> search(QString command);
     QVariant searchTarget(QString command);
     ~DataBase();
