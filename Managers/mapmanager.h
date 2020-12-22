@@ -10,6 +10,7 @@
 #include <QQmlContext>
 #include <QQuickItem>
 #include <QQuickWidget>
+#include <QThread>
 
 class MapManager : public QObject
 {
@@ -28,6 +29,7 @@ public:
     explicit MapManager(QObject *parent = nullptr);
     QVariantList gridList() const;
     QVariantList coordinateList() const;
+    QList<int> gridSelected() const;
     QGeoCoordinate coordinateFrom() const;
     QGeoCoordinate coordinateTo() const;
     int selectStatus() const;
@@ -35,6 +37,7 @@ public:
     void setCoordinateFrom(const QGeoCoordinate &coordinateFrom);
     void setCoordinateTo(const QGeoCoordinate &coordinateTo);
     void setSelectStatus(const int &status);
+    void setFullGrid();
     void initGrids();
     void updateHeatEntry(double start, double end, int step);
     void updateHeatExit(double start, double end, int step);
@@ -58,9 +61,11 @@ public slots:
     void selectTo();
     void selectPlanning();
     void selectedPlanning();
-    void updatedRoute();
+    //    void updatedRoute();
     void predictRoute();
     void predictSpace(int time);
+    void getOriginAddress();
+    void getDestinationAddress();
 signals:
     void updateGrid();
     void updateHeatEntry();
@@ -76,6 +81,8 @@ signals:
     void updateRouteIdeas(QVariantList ideaList);
     void updateSpaceIdeas(QVariantList ideaList);
     void updateDemandPlot();
+    void updateOrigin(QString address);
+    void updateDestination(QString address);
 };
 
 #endif // MAPMANAGER_H

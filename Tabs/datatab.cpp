@@ -5,6 +5,8 @@ DataTab::DataTab(QWidget *parent) : QWidget(parent), ui(new Ui::DataTab)
 {
     ui->setupUi(this);
     managerGrid = MapManager::getManager(ui->containerGrid);
+    managerGrid->setFullGrid();
+    //    connect(managerGrid, &MapManager::updateDemandPlot, this, &DataTab::printDemandTime);
 }
 
 DataTab::~DataTab()
@@ -26,7 +28,8 @@ void DataTab::printDemandTime()
     int timeStop = ui->editDataTimeTo->dateTime().toTime_t();
     QVariantList dataDemand = DataBase::dataBase.searchDemand(timeStart,
                                                               timeStop,
-                                                              ui->spinDataStep->value());
+                                                              ui->spinDataStep->value(),
+                                                              managerGrid->gridSelected());
     qDebug() << dataDemand;
     //    DataBase::dataBase.searchNum("SELECT * FROM dataset");
     for (int step = 0; step < ui->spinDataStep->value(); step++) {
@@ -190,4 +193,15 @@ void DataTab::updatePlots()
     //        }
     //    });
     //    printCharts->start();
+}
+
+void DataTab::on_pushButton_2_clicked()
+{
+    printDemandTime();
+}
+
+void DataTab::on_pushButton_clicked()
+{
+    managerGrid->setFullGrid();
+    managerGrid->initGrids();
 }

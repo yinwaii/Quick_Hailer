@@ -14,7 +14,6 @@ class ChartManager : public QObject
 public:
     //    enum ChartType { Spline, Line, Scatter };
     explicit ChartManager(QGridLayout *ctn = nullptr, QString ttl = NULL, QObject *parent = nullptr);
-    void load();
     SeriesManager *getSeries() { return series; }
     inline void addSeriesId(QString id, QStringList recodes,
                             QMap<QString, SeriesManager::SeriesType> typeConfig = {})
@@ -37,6 +36,8 @@ public:
     inline AxisManager *getAxisY() { return axisY; }
     inline AxisManager *getOtherAxis(QString field) { return otherAxis[field]; }
     ~ChartManager();
+public slots:
+    void load();
 signals:
 private:
     //    ChartType type;

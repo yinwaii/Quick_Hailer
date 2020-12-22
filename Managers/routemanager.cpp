@@ -1,16 +1,14 @@
 #include "routemanager.h"
 
-RouteManager::RouteManager() : provider("osm"), routingManager(provider.routingManager())
+RouteManager::RouteManager()
+    : provider("osm"), routingManager(provider.routingManager()),
+      codingManager(provider.geocodingManager())
 {
-    connect(routingManager,
-            SIGNAL(finished(QGeoRouteReply *)),
-            this,
-            SLOT(routeCalculated(QGeoRouteReply *)));
+    connect(routingManager, &QGeoRoutingManager::finished, this, &RouteManager::routeCalculated);
 
-    connect(routingManager,
-            SIGNAL(error(QGeoRouteReply *, QGeoRouteReply::Error, QString)),
-            this,
-            SLOT(routeError(QGeoRouteReply *, QGeoRouteReply::Error, QString)));
+    connect(routingManager, &QGeoRoutingManager::error, this, &RouteManager::routeError);
+    connect(codingManager, &QGeoCodingManager::finished, this, &RouteManager::addressFetched);
+    connect(codingManager, &QGeoCodingManager::error, this, &RouteManager::addressError);
 }
 
 void RouteManager::setRoute(const QGeoCoordinate &origin, const QGeoCoordinate &destination,
@@ -29,6 +27,21 @@ void RouteManager::setRoute(const QGeoCoordinate &origin, const QGeoCoordinate &
             route = reply->routes();
         } else {
             routeError(reply, reply->error(), reply->errorString());
+        }
+        return;
+    }
+}
+
+void RouteManager::setCoordinate(const QGeoCoordinate &coordinate, int option)
+{
+    p_option = option;
+    QGeoCodeReply *reply = codingManager->reverseGeocode(coordinate);
+    if (reply->isFinished()) {
+        if (reply->error() == QGeoCodeReply::NoError) {
+            addressFetched(reply);
+            addresses = reply->locations();
+        } else {
+            addressError(reply, reply->error(), reply->errorString());
         }
         return;
     }
@@ -65,8 +78,10 @@ void RouteManager::routeCalculated(QGeoRouteReply *reply)
         switch (m_option) {
         case 0:
             emit updateLine();
+            break;
         case 1:
             emit updateFlow();
+            break;
         }
 
         //... now we have to make use of the route ...
@@ -79,11 +94,42 @@ void RouteManager::routeError(QGeoRouteReply *reply, QGeoRouteReply ::Error erro
                               const QString &errorString)
 {
     // ... inform the user that an error has occurred ...
-    qDebug() << error;
+    qDebug() << "error:" << error;
+    reply->deleteLater();
+}
+
+void RouteManager::addressFetched(QGeoCodeReply *reply)
+{
+    if (reply->locations().size() != 0) {
+        addresses = reply->locations();
+        qDebug() << "fetched" << reply->locations().length();
+        switch (p_option) {
+        case 0:
+            emit updateOrigin();
+            break;
+        case 1:
+            emit updateDestination();
+            break;
+        }
+    }
+    reply->deleteLater();
+}
+
+void RouteManager::addressError(QGeoCodeReply *reply, QGeoCodeReply::Error error,
+                                const QString &errorString)
+{
+    qDebug() << "error:" << error;
     reply->deleteLater();
 }
 
 QGeoRoute RouteManager::getRoute() const
 {
     return route.at(0);
+}
+
+QString RouteManager::getAddress() const
+{
+    qDebug() << addresses.at(0).address().text();
+    QStringList addressText = addresses.at(0).address().text().split(", ");
+    return QString("%1(%2)").arg(addressText[0]).arg(addressText[1]);
 }

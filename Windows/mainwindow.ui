@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>962</width>
-    <height>624</height>
+    <width>1008</width>
+    <height>560</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,7 +27,7 @@
        <string notr="true">QTabWidget::tab-bar { alignment: center; } </string>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="DataTab" name="tabData">
        <property name="sizePolicy">
@@ -59,7 +59,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>962</width>
+     <width>1008</width>
      <height>22</height>
     </rect>
    </property>

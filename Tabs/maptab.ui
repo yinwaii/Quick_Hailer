@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>472</width>
+    <width>503</width>
     <height>300</height>
    </rect>
   </property>
@@ -27,9 +27,37 @@
        <string>Thermal Diagram</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_9">
-       <item row="0" column="0" colspan="3">
-        <layout class="QHBoxLayout" name="layoutThermalConfig">
+       <item row="5" column="0" colspan="4">
+        <layout class="QHBoxLayout" name="layoutThermalTimeLine">
          <item>
+          <widget class="QLabel" name="labelThermalTimeLine">
+           <property name="text">
+            <string>TimeLine</string>
+           </property>
+           <property name="buddy">
+            <cstring>sliderThermalTimeLine</cstring>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSlider" name="sliderThermalTimeLine">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="labelThermalTime">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="0" column="0" colspan="4">
+        <layout class="QGridLayout" name="gridLayout_3">
+         <item row="0" column="0">
           <widget class="QLabel" name="labelThermalTimeFrom">
            <property name="text">
             <string>From</string>
@@ -39,7 +67,70 @@
            </property>
           </widget>
          </item>
-         <item>
+         <item row="0" column="3">
+          <widget class="QDateTimeEdit" name="editThermalTimeTo">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="dateTime">
+            <datetime>
+             <hour>23</hour>
+             <minute>59</minute>
+             <second>0</second>
+             <year>2016</year>
+             <month>11</month>
+             <day>1</day>
+            </datetime>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="5">
+          <widget class="QSpinBox" name="spinThermalStepTime">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimum">
+            <number>1</number>
+           </property>
+           <property name="maximum">
+            <number>100</number>
+           </property>
+           <property name="value">
+            <number>30</number>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="4">
+          <widget class="QLabel" name="labelThermalStep">
+           <property name="text">
+            <string>spaceStep</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="5">
+          <widget class="QSpinBox" name="spinThermalStep">
+           <property name="value">
+            <number>30</number>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2">
+          <widget class="QLabel" name="labelThermalTimeTo">
+           <property name="text">
+            <string>To</string>
+           </property>
+           <property name="buddy">
+            <cstring>editThermalTimeTo</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
           <widget class="QDateTimeEdit" name="editThermalTimeFrom">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -59,144 +150,94 @@
            </property>
           </widget>
          </item>
-         <item>
-          <spacer name="spacerThermal1">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeType">
-            <enum>QSizePolicy::Preferred</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QLabel" name="labelThermalTimeTo">
+         <item row="0" column="4">
+          <widget class="QLabel" name="labelThermalStepTime">
            <property name="text">
-            <string>To</string>
+            <string>timeStep</string>
            </property>
            <property name="buddy">
-            <cstring>editThermalTimeTo</cstring>
+            <cstring>spinThermalStepTime</cstring>
            </property>
           </widget>
          </item>
-         <item>
-          <widget class="QDateTimeEdit" name="editThermalTimeTo">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="dateTime">
-            <datetime>
-             <hour>23</hour>
-             <minute>59</minute>
-             <second>0</second>
-             <year>2016</year>
-             <month>11</month>
-             <day>15</day>
-            </datetime>
-           </property>
-          </widget>
+         <item row="1" column="0" colspan="2">
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <widget class="QRadioButton" name="radioThermalOverall">
+             <property name="text">
+              <string>overall</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="radioThermalMoment">
+             <property name="text">
+              <string>moment</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+             <property name="autoRepeat">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </item>
+        </layout>
+       </item>
+       <item row="1" column="0">
+        <layout class="QVBoxLayout" name="verticalLayout">
          <item>
-          <spacer name="spacerThermal2">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeType">
-            <enum>QSizePolicy::Preferred</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QLabel" name="labelThermalStep">
+          <widget class="QLabel" name="labelEntry">
            <property name="text">
-            <string>Step</string>
-           </property>
-           <property name="buddy">
-            <cstring>spinThermalStep</cstring>
+            <string>Entry</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QSpinBox" name="spinThermalStep">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
+          <widget class="QQuickWidget" name="plotThermalOrigin">
+           <property name="resizeMode">
+            <enum>QQuickWidget::SizeRootObjectToView</enum>
            </property>
-           <property name="value">
-            <number>30</number>
+           <property name="source">
+            <url>
+             <string>qrc:/Maps/map.qml</string>
+            </url>
            </property>
           </widget>
          </item>
         </layout>
        </item>
-       <item row="5" column="0" colspan="3">
-        <layout class="QHBoxLayout" name="layoutThermalTimeLine">
-         <item>
-          <widget class="QLabel" name="labelThermalTimeLine">
-           <property name="text">
-            <string>TimeLine</string>
-           </property>
-           <property name="buddy">
-            <cstring>sliderThermalTimeLine</cstring>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QSlider" name="sliderThermalTimeLine">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item row="3" column="1">
+       <item row="1" column="1">
         <widget class="Line" name="lineThermal">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
         </widget>
        </item>
-       <item row="3" column="0">
-        <widget class="QQuickWidget" name="plotThermalOrigin">
-         <property name="resizeMode">
-          <enum>QQuickWidget::SizeRootObjectToView</enum>
-         </property>
-         <property name="source">
-          <url>
-           <string>qrc:/Maps/map.qml</string>
-          </url>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="2">
-        <widget class="QQuickWidget" name="plotThernalDestination">
-         <property name="resizeMode">
-          <enum>QQuickWidget::SizeRootObjectToView</enum>
-         </property>
-         <property name="source">
-          <url>
-           <string>qrc:/Maps/map.qml</string>
-          </url>
-         </property>
-        </widget>
+       <item row="1" column="2">
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QLabel" name="labelExit">
+           <property name="text">
+            <string>Exit</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QQuickWidget" name="plotThernalDestination">
+           <property name="resizeMode">
+            <enum>QQuickWidget::SizeRootObjectToView</enum>
+           </property>
+           <property name="source">
+            <url>
+             <string>qrc:/Maps/map.qml</string>
+            </url>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>
@@ -257,8 +298,8 @@
            </property>
            <property name="dateTime">
             <datetime>
-             <hour>12</hour>
-             <minute>0</minute>
+             <hour>23</hour>
+             <minute>59</minute>
              <second>0</second>
              <year>2016</year>
              <month>11</month>
@@ -285,8 +326,14 @@
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
+           <property name="minimum">
+            <number>1</number>
+           </property>
+           <property name="maximum">
+            <number>100</number>
+           </property>
            <property name="value">
-            <number>30</number>
+            <number>50</number>
            </property>
           </widget>
          </item>
@@ -307,9 +354,23 @@
        <item row="2" column="0">
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
-          <widget class="QSlider" name="sliderFlow">
+          <widget class="QLabel" name="labelFlowTimeLine">
+           <property name="text">
+            <string>TimeLine</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSlider" name="sliderFlowTimeLine">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="labelFlowTime">
+           <property name="text">
+            <string/>
            </property>
           </widget>
          </item>
@@ -434,5 +495,237 @@
  <resources>
   <include location="../resources.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>widgetMap</sender>
+   <signal>currentChanged(int)</signal>
+   <receiver>MapTab</receiver>
+   <slot>loadMap()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>111</x>
+     <y>24</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>38</x>
+     <y>4</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spinThermalStep</sender>
+   <signal>editingFinished()</signal>
+   <receiver>MapTab</receiver>
+   <slot>loadMap()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>439</x>
+     <y>89</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>349</x>
+     <y>0</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spinFlowStep</sender>
+   <signal>editingFinished()</signal>
+   <receiver>MapTab</receiver>
+   <slot>setFlowRange()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>481</x>
+     <y>88</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>441</x>
+     <y>0</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>editThermalTimeFrom</sender>
+   <signal>editingFinished()</signal>
+   <receiver>MapTab</receiver>
+   <slot>setThermalRange()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>65</x>
+     <y>53</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>7</x>
+     <y>65</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>editThermalTimeTo</sender>
+   <signal>editingFinished()</signal>
+   <receiver>MapTab</receiver>
+   <slot>setThermalRange()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>227</x>
+     <y>53</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>464</x>
+     <y>8</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spinThermalStepTime</sender>
+   <signal>editingFinished()</signal>
+   <receiver>MapTab</receiver>
+   <slot>setThermalRange()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>439</x>
+     <y>53</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>500</x>
+     <y>27</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sliderThermalTimeLine</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>MapTab</receiver>
+   <slot>selectedThermalTime()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>95</x>
+     <y>235</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>5</x>
+     <y>207</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sliderThermalTimeLine</sender>
+   <signal>sliderReleased()</signal>
+   <receiver>MapTab</receiver>
+   <slot>loadMap()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>95</x>
+     <y>235</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>5</x>
+     <y>249</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>editFlowTimeFrom</sender>
+   <signal>editingFinished()</signal>
+   <receiver>MapTab</receiver>
+   <slot>setFlowRange()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>83</x>
+     <y>72</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>4</x>
+     <y>55</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>editFlowTimeTo</sender>
+   <signal>editingFinished()</signal>
+   <receiver>MapTab</receiver>
+   <slot>setFlowRange()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>246</x>
+     <y>71</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>5</x>
+     <y>31</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sliderFlowTimeLine</sender>
+   <signal>sliderReleased()</signal>
+   <receiver>MapTab</receiver>
+   <slot>loadMap()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>118</x>
+     <y>249</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>6</x>
+     <y>238</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sliderFlowTimeLine</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>MapTab</receiver>
+   <slot>selectedFlowTime()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>149</x>
+     <y>246</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>7</x>
+     <y>192</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioThermalOverall</sender>
+   <signal>clicked()</signal>
+   <receiver>MapTab</receiver>
+   <slot>loadMap()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>73</x>
+     <y>94</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>4</x>
+     <y>141</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioThermalMoment</sender>
+   <signal>clicked()</signal>
+   <receiver>MapTab</receiver>
+   <slot>loadMap()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>258</x>
+     <y>95</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>503</x>
+     <y>63</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>loadMap()</slot>
+  <slot>setThermalRange()</slot>
+  <slot>selectedThermalTime()</slot>
+  <slot>setFlowRange()</slot>
+  <slot>selectedFlowTime()</slot>
+ </slots>
 </ui>

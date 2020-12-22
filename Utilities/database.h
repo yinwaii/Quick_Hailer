@@ -29,10 +29,11 @@ public:
     QVariantList getGrid();
     QVariantList getEntryExit(double start, double end, int step);
     QVariantList getRoute(double time, int step);
-    QVariantList getRelateTime(QGeoCoordinate origin, QGeoCoordinate destination);
-    QVariantList getRelateSpace(QGeoCoordinate origin, double time);
+    QVariantList getRelateTime(QGeoCoordinate origin, QGeoCoordinate destination,
+                               double delta = 0.005);
+    QVariantList getRelateSpace(QGeoCoordinate origin, double time, double delta = 0.005);
     int searchNum(QString command);
-    QVariantList searchDemand(int start, int end, int step);
+    QVariantList searchDemand(int start, int end, int step, QList<int> grid);
     QVariantList searchDistribution(int start, int end, int time_max, double fee_max, int step);
     QVariantList searchRevenue(int start, int end, int step);
     QList<QVariant> search(QString command);

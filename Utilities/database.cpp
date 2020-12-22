@@ -245,7 +245,7 @@ int DataBase::searchNum(QString command)
     return result;
 }
 
-QVariantList DataBase::searchDemand(int start, int end, int step)
+QVariantList DataBase::searchDemand(int start, int end, int step, QList<int> grid)
 {
     QSqlDatabase db = get();
     emit statusText("Opening the database to get the num...");
@@ -266,6 +266,12 @@ QVariantList DataBase::searchDemand(int start, int end, int step)
         result.push_back(stepMap);
     }
     while (query.next()) {
+        int gridIndex
+            = GlobalData::get_grid(10,
+                                   query.value(query.record().indexOf("orig_lng")).toDouble(),
+                                   query.value(query.record().indexOf("orig_lat")).toDouble());
+        if (!grid.contains(gridIndex))
+            continue;
         QVariantMap old_entry_map
             = result[GlobalData::get_step(step,
                                           query.value(query.record().indexOf("departure_time"))
@@ -460,6 +466,7 @@ QVariantList DataBase::getGrid()
         tmp["grid"] = rect;
         tmp["entry"] = -1;
         tmp["exit"] = -1;
+        tmp["selected"] = false;
         result.push_back(tmp);
     }
     db.close();
@@ -469,72 +476,109 @@ QVariantList DataBase::getGrid()
 QVariantList DataBase::getEntryExit(double start, double end, int step)
 {
     QSqlDatabase db = get();
-    int maxEntry = -1, maxExit = -1;
+    //    int maxEntry = -1, maxExit = -1;
     emit statusText("Opening the database to get entry & exit...");
     if (!db.open()) {
         QMessageBox::warning(nullptr, "warning", "Can't create the database! ");
         assert(0);
     }
     QVariantList result;
-    for (int i = 0; i < step * step; i++) {
-        QVariantMap tmp;
-        QPointF topLeft = {GlobalData::globalData.get_edge_lat(step, i / step + 1),
-                           GlobalData::globalData.get_edge_lng(step, i % step)};
-        QPointF bottomRight = {GlobalData::globalData.get_edge_lat(step, i / step),
-                               GlobalData::get_edge_lng(step, i % step + 1)};
-        QRectF rect;
-        rect.setTopLeft(topLeft);
-        rect.setBottomRight(bottomRight);
-        tmp["grid"] = rect;
-        tmp["entry"] = 0;
-        tmp["exit"] = 0;
-        result.push_back(tmp);
-    }
+    QMap<int, QPair<int, int>> entryExitMap;
+    //    for (int i = 0; i < step * step; i++) {
+    //        QVariantMap tmp;
+    //        QPointF topLeft = {GlobalData::globalData.get_edge_lat(step, i / step + 1),
+    //                           GlobalData::globalData.get_edge_lng(step, i % step)};
+    //        QPointF bottomRight = {GlobalData::globalData.get_edge_lat(step, i / step),
+    //                               GlobalData::get_edge_lng(step, i % step + 1)};
+    //        QRectF rect;
+    //        rect.setTopLeft(topLeft);
+    //        rect.setBottomRight(bottomRight);
+    //        tmp["grid"] = rect;
+    //        tmp["entry"] = 0;
+    //        tmp["exit"] = 0;
+    //        result.push_back(tmp);
+    //    }
     QString commandEntry
-        = QString("SELECT * FROM dataset WHERE departure_time > %1 AND departure_time < %2")
-              .arg(start)
-              .arg(end);
+        = QString("SELECT * FROM dataset WHERE departure_time >= %1 AND departure_time <= %2")
+              .arg(int(start))
+              .arg(int(end));
     QSqlQuery query(commandEntry, db);
+    //    qDebug() << commandEntry;
     while (query.next()) {
         int entryIndex = GlobalData::globalData
                              .get_grid(step,
                                        query.value(query.record().indexOf("orig_lng")).toDouble(),
                                        query.value(query.record().indexOf("orig_lat")).toDouble());
+        if (entryExitMap.contains(entryIndex))
+            entryExitMap[entryIndex].first++;
+        else
+            entryExitMap[entryIndex] = qMakePair(1, 0);
         //        qDebug() << query.value(query.record().indexOf("orig_lng")).toDouble()
         //                 << query.value(query.record().indexOf("orig_lat")).toDouble() << entryIndex;
         if (entryIndex >= step * step || entryIndex < 0)
             continue;
-        QVariantMap entryMap = result[entryIndex].toMap();
-        entryMap["entry"] = entryMap["entry"].toInt() + 1;
-        result[entryIndex] = entryMap;
-        if (maxEntry == -1 || entryMap["entry"].toInt() > maxEntry)
-            maxEntry = entryMap["entry"].toInt();
+        //        QVariantMap entryMap = result[entryIndex].toMap();
+        //        entryMap["entry"] = entryMap["entry"].toInt() + 1;
+        //        result[entryIndex] = entryMap;
+        //        if (maxEntry == -1 || entryMap["entry"].toInt() > maxEntry)
+        //            maxEntry = entryMap["entry"].toInt();
     }
-    QString commandExit
-        = QString("SELECT * FROM dataset WHERE end_time > %1 AND end_time < %2").arg(start).arg(end);
+    QString commandExit = QString("SELECT * FROM dataset WHERE end_time >= %1 AND end_time <= %2")
+                              .arg(int(start))
+                              .arg(int(end));
     query.exec(commandExit);
+    //    qDebug() << commandExit;
     while (query.next()) {
         int exitIndex = GlobalData::globalData
                             .get_grid(step,
                                       query.value(query.record().indexOf("dest_lng")).toDouble(),
                                       query.value(query.record().indexOf("dest_lat")).toDouble());
+        if (entryExitMap.contains(exitIndex))
+            entryExitMap[exitIndex].second++;
+        else
+            entryExitMap[exitIndex] = qMakePair(0, 1);
         //        qDebug() << query.value(query.record().indexOf("dest_lng")).toDouble()
         //                 << query.value(query.record().indexOf("dest_lat")).toDouble() << exitIndex;
         if (exitIndex >= step * step || exitIndex < 0)
             continue;
-        QVariantMap exitMap = result[exitIndex].toMap();
-        exitMap["exit"] = exitMap["exit"].toInt() + 1;
-        result[exitIndex] = exitMap;
-        if (maxExit == -1 || exitMap["exit"].toInt() > maxExit)
-            maxExit = exitMap["exit"].toInt();
+        //        QVariantMap exitMap = result[exitIndex].toMap();
+        //        exitMap["exit"] = exitMap["exit"].toInt() + 1;
+        //        result[exitIndex] = exitMap;
+        //        if (maxExit == -1 || exitMap["exit"].toInt() > maxExit)
+        //            maxExit = exitMap["exit"].toInt();
     }
-    for (int i = 0; i < result.count(); i++) {
-        QVariantMap tmp = result[i].toMap();
-        tmp["entry"] = double(result[i].toMap()["entry"].toInt()) / double(maxEntry);
-        tmp["exit"] = double(result[i].toMap()["exit"].toInt()) / double(maxExit);
-        result[i] = tmp;
+    //    qDebug() << entryExitMap;
+    int entryMax = 0, exitMax = 0;
+    foreach (int index, entryExitMap.keys()) {
+        if (entryExitMap[index].first > entryMax)
+            entryMax = entryExitMap[index].first;
+        if (entryExitMap[index].second > exitMax)
+            exitMax = entryExitMap[index].second;
     }
+    foreach (int index, entryExitMap.keys()) {
+        QVariantMap tmp;
+        QPointF topLeft = {GlobalData::globalData.get_edge_lat(step, index / step + 1),
+                           GlobalData::globalData.get_edge_lng(step, index % step)};
+        QPointF bottomRight = {GlobalData::globalData.get_edge_lat(step, index / step),
+                               GlobalData::get_edge_lng(step, index % step + 1)};
+        QRectF rect;
+        rect.setTopLeft(topLeft);
+        rect.setBottomRight(bottomRight);
+        tmp["grid"] = rect;
+        tmp["entry"] = double(entryExitMap[index].first) / double(entryMax);
+        tmp["exit"] = double(entryExitMap[index].second) / double(entryMax);
+        //        qDebug() << tmp;
+        if (tmp["entry"] > 0.1 || tmp["exit"] > 0.1)
+            result.push_back(tmp);
+    }
+    //    for (int i = 0; i < result.count(); i++) {
+    //        QVariantMap tmp = result[i].toMap();
+    //        tmp["entry"] = double(result[i].toMap()["entry"].toInt()) / double(maxEntry);
+    //        tmp["exit"] = double(result[i].toMap()["exit"].toInt()) / double(maxExit);
+    //        result[i] = tmp;
+    //    }
     db.close();
+    //    qDebug() << result;
     return result;
 }
 
@@ -564,7 +608,7 @@ QVariantList DataBase::getRoute(double time, int step)
         if (routeMap.contains(tmpRouteGrid))
             routeMap[tmpRouteGrid]++;
         else
-            routeMap[tmpRouteGrid] = 0;
+            routeMap[tmpRouteGrid] = 1;
         //        tmp["origin"] = QVariant::fromValue(origin);
         //        tmp["destination"] = QVariant::fromValue(destination);
         //        result.push_back(tmp);
@@ -588,7 +632,7 @@ QVariantList DataBase::getRoute(double time, int step)
     return result;
 }
 
-QVariantList DataBase::getRelateTime(QGeoCoordinate origin, QGeoCoordinate destination)
+QVariantList DataBase::getRelateTime(QGeoCoordinate origin, QGeoCoordinate destination, double delta)
 {
     QSqlDatabase db = get();
     emit statusText("Opening the database to predict routes...");
@@ -600,14 +644,14 @@ QVariantList DataBase::getRelateTime(QGeoCoordinate origin, QGeoCoordinate desti
     QString commandRoute = QString("SELECT * FROM dataset WHERE orig_lat >= %1 AND orig_lat <= %2 "
                                    "AND orig_lng >= %3 AND orig_lng <= %4 AND dest_lat >= %5 AND "
                                    "dest_lat <= %6 AND dest_lng >= %7 AND dest_lng <= %8")
-                               .arg(origin.latitude() - 0.005)
-                               .arg(origin.latitude() + 0.005)
-                               .arg(origin.longitude() - 0.005)
-                               .arg(origin.longitude() + 0.005)
-                               .arg(destination.latitude() - 0.005)
-                               .arg(destination.latitude() + 0.005)
-                               .arg(destination.longitude() - 0.005)
-                               .arg(destination.longitude() + 0.005);
+                               .arg(origin.latitude() - delta)
+                               .arg(origin.latitude() + delta)
+                               .arg(origin.longitude() - delta)
+                               .arg(origin.longitude() + delta)
+                               .arg(destination.latitude() - delta)
+                               .arg(destination.latitude() + delta)
+                               .arg(destination.longitude() - delta)
+                               .arg(destination.longitude() + delta);
     //    qDebug() << commandRoute;
     QSqlQuery query(commandRoute, db);
     while (query.next()) {
@@ -626,7 +670,7 @@ QVariantList DataBase::getRelateTime(QGeoCoordinate origin, QGeoCoordinate desti
     return result;
 }
 
-QVariantList DataBase::getRelateSpace(QGeoCoordinate origin, double time)
+QVariantList DataBase::getRelateSpace(QGeoCoordinate origin, double time, double delta)
 {
     QSqlDatabase db = get();
     emit statusText("Opening the database to predict space...");
@@ -639,10 +683,10 @@ QVariantList DataBase::getRelateSpace(QGeoCoordinate origin, double time)
     QString commandRoute = QString(
                                "SELECT * FROM dataset WHERE orig_lat >= %1 AND orig_lat <= %2 "
                                "AND orig_lng >= %3 AND orig_lng <= %4 AND time >= %5 AND time <=%6")
-                               .arg(origin.latitude() - 0.005)
-                               .arg(origin.latitude() + 0.005)
-                               .arg(origin.longitude() - 0.005)
-                               .arg(origin.longitude() + 0.005)
+                               .arg(origin.latitude() - delta)
+                               .arg(origin.latitude() + delta)
+                               .arg(origin.longitude() - delta)
+                               .arg(origin.longitude() + delta)
                                .arg(time * 60 - 20)
                                .arg(time * 60 + 20);
     qDebug() << commandRoute;

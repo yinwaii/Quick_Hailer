@@ -39,6 +39,7 @@ Rectangle {
                 topLeft: QtPositioning.coordinate(grid.x,grid.y)
                 bottomRight: QtPositioning.coordinate(grid.x+grid.width,grid.y+grid.height)
                 Component.onCompleted: {
+                     map.fitViewportToVisibleMapItems()
 //                    if(entry==undefined)
 //                        opacity=0.2
                 }
@@ -58,6 +59,7 @@ Rectangle {
                 topLeft: QtPositioning.coordinate(grid.x,grid.y)
                 bottomRight: QtPositioning.coordinate(grid.x+grid.width,grid.y+grid.height)
                 Component.onCompleted: {
+                     map.fitViewportToVisibleMapItems()
 //                    if(entry==undefined)
 //                        opacity=0.2
                 }
@@ -72,7 +74,7 @@ Rectangle {
             delegate: MapRectangle {
                 id: mapGridRectangle
                 border.width: 1
-//                color: "red"
+                color: (selected==true)?"red":"transparent"
                 opacity: 0.2
                 topLeft: QtPositioning.coordinate(grid.x,grid.y)
                 bottomRight: QtPositioning.coordinate(grid.x+grid.width,grid.y+grid.height)
@@ -104,12 +106,12 @@ Rectangle {
                 id: mapConnectionLine
                 line.width: 2
                 line.color: "black"
-//                opacity: count
-//                path: [origin,destination]
-                path:(index<mapManager.coordinateList.length)?mapManager.coordinateList[index].paths:[]
+                opacity: count
+                path: [origin,destination]
+//                path:(index<mapManager.coordinateList.length)?mapManager.coordinateList[index].paths:[]
                 Component.onCompleted: {
 //                    console.log(origin,destination)
-                    console.log(index)
+//                    console.log(index)
 
                 }
             }
@@ -230,6 +232,7 @@ Rectangle {
                 visible: false
                 anchors.fill: parent
                 onPressed: {
+                    console.log("pressed")
                     marker.visible=true
                     marker.coordinate = map.toCoordinate(Qt.point(mouse.x,mouse.y))
                     if(mapManager.selectStatus===1) {
@@ -254,6 +257,7 @@ Rectangle {
             }
 
             onUpdateHeatEntry: {
+                mapEntryModel.clear()
                 for(var i=0;i<gridList.length;i++)
                 {
                     if(gridList[i]["entry"]>0)
@@ -265,6 +269,7 @@ Rectangle {
             }
 
             onUpdateHeatExit: {
+                mapExitModel.clear()
                 for(var i=0;i<gridList.length;i++)
                 {
                     if(gridList[i]["exit"]>0)
@@ -276,7 +281,7 @@ Rectangle {
             }
 
             onUpdateCoordinateList: {
-                mapRouteModel.clear()
+                mapConnectionModel.clear()
                 for(var i=0;i<coordinateList.length;i++)
                 {
 //                    console.log(coordinateList[i],coordinateList[i].paths)
@@ -287,7 +292,7 @@ Rectangle {
 //                                        mapConnectionRouteModel.update()
 
                 }
-//                map.fitViewportToVisibleMapItems()
+                map.fitViewportToVisibleMapItems()
             }
 
             onUpdateSelectStatus: {

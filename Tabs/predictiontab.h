@@ -19,6 +19,9 @@ public:
 public slots:
     void loadRouteIdeas(QVariantList ideaList);
     void loadSpaceIdeas(QVariantList ideaList);
+    void getRouteOriginAddress(QString address);
+    void getRouteDestinationAddress(QString address);
+    void getSpaceOriginAddress(QString address);
 
 private slots:
     void on_buttonSpacePredict_clicked();
