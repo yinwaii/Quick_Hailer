@@ -72,6 +72,12 @@ void MapTab::loadManeuver(QList<QGeoManeuver> maneuverList)
     ui->listRoute->clear();
     foreach (QGeoManeuver maneuver, maneuverList) {
         ui->listRoute->addItem(maneuver.instructionText());
+        if (maneuver.timeToNextInstruction() > 0) {
+            QString instruction = QString("%2 s for %3 m")
+                                      .arg(maneuver.timeToNextInstruction())
+                                      .arg(maneuver.distanceToNextInstruction());
+            ui->listRoute->addItem(instruction);
+        }
     }
 }
 

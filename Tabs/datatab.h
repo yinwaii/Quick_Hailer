@@ -26,11 +26,14 @@ public slots:
     void printDistribution();
     void printRevenue();
     void updatePlots();
+    //    void loadDemandChart();
 
 private slots:
     void on_pushButton_2_clicked();
 
     void on_pushButton_clicked();
+
+    void on_widgetData_currentChanged(int index);
 
 private:
     Ui::DataTab *ui;

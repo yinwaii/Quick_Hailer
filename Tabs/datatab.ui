@@ -140,6 +140,13 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QPushButton" name="buttonShow">
+       <property name="text">
+        <string>Show</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item>
@@ -161,9 +168,6 @@
           <enum>Qt::Vertical</enum>
          </property>
         </widget>
-       </item>
-       <item row="0" column="3">
-        <layout class="QGridLayout" name="containerDemandTime"/>
        </item>
        <item row="0" column="0">
         <layout class="QGridLayout" name="gridLayout">
@@ -207,6 +211,21 @@
          </item>
         </layout>
        </item>
+       <item row="0" column="3">
+        <widget class="QWidget" name="widget" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_2">
+          <item row="0" column="0">
+           <layout class="QGridLayout" name="containerDemandTime"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="tabDistribution">
@@ -243,66 +262,18 @@
  <resources/>
  <connections>
   <connection>
-   <sender>editDataTimeTo</sender>
-   <signal>timeChanged(QTime)</signal>
+   <sender>buttonShow</sender>
+   <signal>clicked()</signal>
    <receiver>DataTab</receiver>
    <slot>updatePlots()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>277</x>
-     <y>26</y>
+     <x>552</x>
+     <y>21</y>
     </hint>
     <hint type="destinationlabel">
-     <x>400</x>
-     <y>3</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>editDataTimeFrom</sender>
-   <signal>timeChanged(QTime)</signal>
-   <receiver>DataTab</receiver>
-   <slot>updatePlots()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>153</x>
-     <y>17</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>200</x>
-     <y>2</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>spinDataStep</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>DataTab</receiver>
-   <slot>updatePlots()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>577</x>
-     <y>24</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>599</x>
-     <y>41</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>widgetData</sender>
-   <signal>currentChanged(int)</signal>
-   <receiver>DataTab</receiver>
-   <slot>updatePlots()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>242</x>
-     <y>55</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>168</x>
-     <y>-4</y>
+     <x>301</x>
+     <y>222</y>
     </hint>
    </hints>
   </connection>

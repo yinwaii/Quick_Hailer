@@ -2,6 +2,7 @@
 #define DATABASE_H
 
 #include <QApplication>
+#include <QDateTime>
 #include <QDebug>
 #include <QDir>
 #include <QGeoCoordinate>
@@ -20,9 +21,11 @@ private:
     //    QSqlDatabase db;
 
 public:
+    static QMutex db_mutex;
     static DataBase dataBase;
     explicit DataBase(QObject *parent = nullptr);
-    QSqlDatabase get();
+    QSqlDatabase get(QString name = "");
+    void remove();
     void init();
     void load();
     void loadGrids();

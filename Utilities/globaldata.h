@@ -1,15 +1,18 @@
 #ifndef GLOBALDATA_H
 #define GLOBALDATA_H
 
+#include <QDebug>
 #include <QGeoCoordinate>
 #include <QMap>
 #include <QObject>
+#include <QThread>
 #include <QVariant>
 
 class GlobalData : public QObject
 {
     Q_OBJECT
 private:
+    QList<QThread *> threads;
     QMap<QString, QVariant> config;
     QMap<QString, QVariant> environment;
     static double lng_min;
@@ -30,5 +33,9 @@ public:
     static QGeoCoordinate get_coordinate(int step, int index);
     static int get_step(int step, double time, double start, double stop);
     static double get_time(int step, int index, double start, double stop);
+    void clear_threads();
+    void remove_threads(QThread *thread);
+    bool isEmpty_threads();
+    void add_threads(QThread *thread);
 };
 #endif // GLOBALDATA_H

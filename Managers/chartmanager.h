@@ -3,6 +3,7 @@
 
 #include "Managers/axismanager.h"
 #include "Managers/seriesmanager.h"
+#include <QEasingCurve>
 #include <QGridLayout>
 #include <QMessageBox>
 #include <QObject>
@@ -38,6 +39,7 @@ public:
     ~ChartManager();
 public slots:
     void load();
+    void show();
 signals:
 private:
     //    ChartType type;

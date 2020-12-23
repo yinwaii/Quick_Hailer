@@ -48,12 +48,35 @@ void ChartManager::load()
     if (!title.isNull())
         chart->setTitle(title);
     chartView = new QChartView(chart);
+    QtCharts::QChart::AnimationOptions animation = chartView->chart()->animationOptions();
+    animation.setFlag(QtCharts::QChart::AllAnimations);
+    chartView->chart()->setAnimationOptions(animation);
+    chartView->chart()->setAnimationEasingCurve(QEasingCurve::OutExpo);
+    chartView->chart()->setAnimationDuration(500);
     qDebug() << "Setting the chartView ...";
     QSizePolicy policy = chartView->sizePolicy();
     policy.setVerticalPolicy(QSizePolicy::Expanding);
     policy.setHorizontalPolicy(QSizePolicy::Expanding);
     chartView->setSizePolicy(policy);
     chartView->setRenderHint(QPainter::Antialiasing);
+    container->addWidget(chartView, 0, 0);
+    qDebug() << "Loading finished ...";
+}
+
+void ChartManager::show()
+{
+    qDebug() << "Start to load the chart ...";
+    qDebug() << "Clear the old data ...";
+    if (container->widget() != NULL) {
+        container->removeWidget(container->widget());
+        delete chartView;
+    }
+    chartView = new QChartView(chart);
+    QtCharts::QChart::AnimationOptions animation = chartView->chart()->animationOptions();
+    animation.setFlag(QtCharts::QChart::AllAnimations);
+    chartView->chart()->setAnimationOptions(animation);
+    chartView->chart()->setAnimationEasingCurve(QEasingCurve::OutExpo);
+    chartView->chart()->setAnimationDuration(500);
     container->addWidget(chartView, 0, 0);
     qDebug() << "Loading finished ...";
 }

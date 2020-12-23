@@ -1,6 +1,7 @@
 #include "database.h"
 #include "globaldata.h"
 
+QMutex DataBase::db_mutex;
 DataBase DataBase::dataBase;
 DataBase::DataBase(QObject *parent) : QObject(parent) {}
 void DataBase::init()
@@ -56,24 +57,35 @@ void DataBase::init()
     //        qDebug() << query.lastError().text();
     //        return;
     //    }
-    if (!query.exec("CREATE INDEX timeNeededIndex ON dataset (time)")) {
-        qDebug() << "fail to create the time-needed index";
-        qDebug() << query.lastError().text();
-        assert(0);
-    }
-    if (!query.exec("CREATE INDEX feeIndex ON dataset (fee)")) {
-        qDebug() << "fail to create the fee index";
-        qDebug() << query.lastError().text();
-        assert(0);
-    }
+    //    if (!query.exec("CREATE INDEX timeNeededIndex ON dataset (time)")) {
+    //        qDebug() << "fail to create the time-needed index";
+    //        qDebug() << query.lastError().text();
+    //        assert(0);
+    //    }
+    //    if (!query.exec("CREATE INDEX feeIndex ON dataset (fee)")) {
+    //        qDebug() << "fail to create the fee index";
+    //        qDebug() << query.lastError().text();
+    //        assert(0);
+    //    }
     db.close();
     emit statusText("Successfully init the database!");
 }
-QSqlDatabase DataBase::get()
+QSqlDatabase DataBase::get(QString name)
 {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "ride_hailing_data");
+    QString connectionName = "ride_hailing_data";
+    if (!name.isEmpty())
+        connectionName = connectionName + "_" + name;
+    connectionName += QDateTime::currentDateTime().toString("_hh_mm_ss");
+    connectionName += QString("%1").arg(qrand());
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", connectionName);
     db.setDatabaseName(QApplication::applicationFilePath() + ".db");
+    db_mutex.lock();
     return db;
+}
+void DataBase::remove()
+{
+    db_mutex.unlock();
+    QSqlDatabase::removeDatabase(QApplication::applicationFilePath() + ".db");
 }
 void DataBase::load()
 {
@@ -161,12 +173,13 @@ void DataBase::load()
     }
     //    emit statusProgress(0);
     db.close();
+    remove();
     //    QMessageBox::information(nullptr, "success", "load already success!");
 }
 
 void DataBase::loadGrids()
 {
-    QSqlDatabase db = get();
+    QSqlDatabase db = get("loadGrids");
     emit statusText("Opening the database ...");
     if (!db.open()) {
         qDebug() << "Can't create the database! ";
@@ -223,11 +236,13 @@ void DataBase::loadGrids()
     }
     db.commit();
     dataFile.close();
+    db.close();
+    remove();
 }
 
 int DataBase::searchNum(QString command)
 {
-    QSqlDatabase db = get();
+    QSqlDatabase db = get("num");
     emit statusText("Opening the database to get the num...");
     if (!db.open()) {
         QMessageBox::warning(nullptr, "warning", "Can't create the database! ");
@@ -242,12 +257,13 @@ int DataBase::searchNum(QString command)
     }
     //    qDebug() << "result:" << result;
     db.close();
+    remove();
     return result;
 }
 
 QVariantList DataBase::searchDemand(int start, int end, int step, QList<int> grid)
 {
-    QSqlDatabase db = get();
+    QSqlDatabase db = get("demand");
     emit statusText("Opening the database to get the num...");
     if (!db.open()) {
         QMessageBox::warning(nullptr, "warning", "Can't create the database! ");
@@ -298,12 +314,13 @@ QVariantList DataBase::searchDemand(int start, int end, int step, QList<int> gri
     }
     //    qDebug() << "result:" << result;
     db.close();
+    remove();
     return result;
 }
 
 QVariantList DataBase::searchDistribution(int start, int end, int time_max, double fee_max, int step)
 {
-    QSqlDatabase db = get();
+    QSqlDatabase db = get("distribution");
     emit statusText("Opening the database to get the num...");
     if (!db.open()) {
         QMessageBox::warning(nullptr, "warning", "Can't create the database! ");
@@ -365,12 +382,13 @@ QVariantList DataBase::searchDistribution(int start, int end, int time_max, doub
     }
     //    qDebug() << "result:" << result;
     db.close();
+    remove();
     return result;
 }
 
 QVariantList DataBase::searchRevenue(int start, int end, int step)
 {
-    QSqlDatabase db = get();
+    QSqlDatabase db = get("revenue");
     emit statusText("Opening the database to get the num...");
     if (!db.open()) {
         QMessageBox::warning(nullptr, "warning", "Can't create the database! ");
@@ -402,12 +420,13 @@ QVariantList DataBase::searchRevenue(int start, int end, int step)
     }
     //    qDebug() << "result:" << result;
     db.close();
+    remove();
     return result;
 }
 
 QList<QVariant> DataBase::search(QString command)
 {
-    QSqlDatabase db = get();
+    QSqlDatabase db = get("search");
     emit statusText("Opening the database to search...");
     if (!db.open()) {
         QMessageBox::warning(nullptr, "warning", "Can't create the database! ");
@@ -421,13 +440,14 @@ QList<QVariant> DataBase::search(QString command)
         list.push_back(query.value(query.record().indexOf("Target")));
     }
     db.close();
+    remove();
     //    qDebug() << list;
     return list;
 }
 
 QVariant DataBase::searchTarget(QString command)
 {
-    QSqlDatabase db = get();
+    QSqlDatabase db = get("target");
     emit statusText("Opening the database to get the target...");
     if (!db.open()) {
         QMessageBox::warning(nullptr, "warning", "Can't create the database! ");
@@ -440,13 +460,14 @@ QVariant DataBase::searchTarget(QString command)
     assert(query.next());
     result = query.value(query.record().indexOf("Target"));
     db.close();
+    remove();
     //    qDebug() << list;
     return result;
 }
 
 QVariantList DataBase::getGrid()
 {
-    QSqlDatabase db = get();
+    QSqlDatabase db = get("getGrid");
     emit statusText("Opening the database to get grids...");
     if (!db.open()) {
         QMessageBox::warning(nullptr, "warning", "Can't create the database! ");
@@ -470,12 +491,13 @@ QVariantList DataBase::getGrid()
         result.push_back(tmp);
     }
     db.close();
+    remove();
     return result;
 }
 
 QVariantList DataBase::getEntryExit(double start, double end, int step)
 {
-    QSqlDatabase db = get();
+    QSqlDatabase db = get("entryExit");
     //    int maxEntry = -1, maxExit = -1;
     emit statusText("Opening the database to get entry & exit...");
     if (!db.open()) {
@@ -578,13 +600,14 @@ QVariantList DataBase::getEntryExit(double start, double end, int step)
     //        result[i] = tmp;
     //    }
     db.close();
+    remove();
     //    qDebug() << result;
     return result;
 }
 
 QVariantList DataBase::getRoute(double time, int step)
 {
-    QSqlDatabase db = get();
+    QSqlDatabase db = get("route");
     emit statusText("Opening the database to get route...");
     if (!db.open()) {
         QMessageBox::warning(nullptr, "warning", "Can't create the database! ");
@@ -629,12 +652,13 @@ QVariantList DataBase::getRoute(double time, int step)
             result.push_back(tmp);
     }
     db.close();
+    remove();
     return result;
 }
 
 QVariantList DataBase::getRelateTime(QGeoCoordinate origin, QGeoCoordinate destination, double delta)
 {
-    QSqlDatabase db = get();
+    QSqlDatabase db = get("relateTime");
     emit statusText("Opening the database to predict routes...");
     if (!db.open()) {
         QMessageBox::warning(nullptr, "warning", "Can't create the database! ");
@@ -667,12 +691,14 @@ QVariantList DataBase::getRelateTime(QGeoCoordinate origin, QGeoCoordinate desti
         //        qDebug() << "get" << tmp;
         result.push_back(tmp);
     }
+    db.close();
+    remove();
     return result;
 }
 
 QVariantList DataBase::getRelateSpace(QGeoCoordinate origin, double time, double delta)
 {
-    QSqlDatabase db = get();
+    QSqlDatabase db = get("relateSpace");
     emit statusText("Opening the database to predict space...");
     if (!db.open()) {
         QMessageBox::warning(nullptr, "warning", "Can't create the database! ");
@@ -703,6 +729,8 @@ QVariantList DataBase::getRelateSpace(QGeoCoordinate origin, double time, double
         tmp["fee"] = query.value(query.record().indexOf("fee"));
         result.push_back(tmp);
     }
+    db.close();
+    remove();
     return result;
 }
 

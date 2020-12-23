@@ -20,7 +20,7 @@
       <string notr="true">QTabWidget::tab-bar { alignment: center; } </string>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tabThermal">
       <attribute name="title">
@@ -184,17 +184,20 @@
            </item>
           </layout>
          </item>
+         <item row="1" column="2" colspan="2">
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>Red: entry  Blue: exit</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
         </layout>
        </item>
        <item row="1" column="0">
         <layout class="QVBoxLayout" name="verticalLayout">
-         <item>
-          <widget class="QLabel" name="labelEntry">
-           <property name="text">
-            <string>Entry</string>
-           </property>
-          </widget>
-         </item>
          <item>
           <widget class="QQuickWidget" name="plotThermalOrigin">
            <property name="resizeMode">
@@ -218,13 +221,6 @@
        </item>
        <item row="1" column="2">
         <layout class="QVBoxLayout" name="verticalLayout_2">
-         <item>
-          <widget class="QLabel" name="labelExit">
-           <property name="text">
-            <string>Exit</string>
-           </property>
-          </widget>
-         </item>
          <item>
           <widget class="QQuickWidget" name="plotThernalDestination">
            <property name="resizeMode">

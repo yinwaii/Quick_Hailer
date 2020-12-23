@@ -75,3 +75,32 @@ double GlobalData::get_time(int step, int index, double start, double stop)
     double timeStepLength = (stop - start) / double(step);
     return start + timeStepLength * index;
 }
+
+void GlobalData::clear_threads()
+{
+    foreach (QThread *thread, threads) {
+        thread->quit();
+        thread->wait();
+        delete thread;
+    }
+    threads.clear();
+}
+
+void GlobalData::add_threads(QThread *thread)
+{
+    threads.push_back(thread);
+}
+
+bool GlobalData::isEmpty_threads()
+{
+    qDebug() << threads;
+    return threads.isEmpty();
+}
+
+void GlobalData::remove_threads(QThread *thread)
+{
+    qDebug() << "before remove" << threads;
+    if (threads.contains(thread))
+        threads.removeOne(thread);
+    qDebug() << "after remove" << threads;
+}

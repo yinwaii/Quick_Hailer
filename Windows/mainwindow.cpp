@@ -19,7 +19,7 @@ void MainWindow::open_the_mainWindow()
     //    ui->tabData->printDistribution();
     //    ui->tabData->printDemandTime();
     //    ui->tabData->printRevenue();
-    DataBase::dataBase.getGrid();
+    //    DataBase::dataBase.getGrid();
     emit ui->tabData->updatePlots();
     emit ui->tabMap->loadMap();
     //    QThread *loadCharts = QThread::create([this] {

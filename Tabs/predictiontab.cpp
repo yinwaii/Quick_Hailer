@@ -61,9 +61,9 @@ void PredictionTab::loadRouteIdeas(QVariantList ideaList)
         qDebug() << tmp;
         ui->listRouteIdea->addItem(tmp);
     }
-    ui->labelAnswer->setText(QString("time: %1 min fee: %2")
-                                 .arg(averageTime / (ideaList.count() * 60))
-                                 .arg(averageFee / ideaList.count()));
+    averageFee = floor(averageFee * 100 / ideaList.count()) / 100;
+    ui->labelAnswer->setText(
+        QString("time: %1 min fee: ￥%2").arg(averageTime / (ideaList.count() * 60)).arg(averageFee));
 }
 
 void PredictionTab::loadSpaceIdeas(QVariantList ideaList)

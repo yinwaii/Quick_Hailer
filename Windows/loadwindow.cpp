@@ -139,6 +139,7 @@ void LoadWindow::on_buttonLoad_clicked()
         DataBase::dataBase.loadGrids();
     });
     connect(dataBaseInsert, &QThread::finished, this, &LoadWindow::insert_finished);
+    //    GlobalData::globalData.add_threads(dataBaseInsert);
     dataBaseInsert->start();
 }
 

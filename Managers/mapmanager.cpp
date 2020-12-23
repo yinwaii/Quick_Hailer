@@ -94,16 +94,32 @@ void MapManager::initGrids()
 
 void MapManager::updateHeatEntry(double start, double end, int step)
 {
-    m_gridList = DataBase::dataBase.getEntryExit(start, end, step);
-    emit updateHeatEntry();
-    emit updateGridList();
+    QThread *printHeatEntry = QThread::create([this, start, end, step] {
+        m_gridList = DataBase::dataBase.getEntryExit(start, end, step);
+        emit updateHeatEntry();
+        emit updateGridList();
+    });
+    GlobalData::globalData.clear_threads();
+    GlobalData::globalData.add_threads(printHeatEntry);
+    connect(printHeatEntry, &QThread::finished, [printHeatEntry] {
+        GlobalData::globalData.remove_threads(printHeatEntry);
+    });
+    printHeatEntry->start();
 }
 
 void MapManager::updateHeatExit(double start, double end, int step)
 {
-    m_gridList = DataBase::dataBase.getEntryExit(start, end, step);
-    emit updateHeatExit();
-    emit updateGridList();
+    QThread *printHeatExit = QThread::create([this, start, end, step] {
+        m_gridList = DataBase::dataBase.getEntryExit(start, end, step);
+        emit updateHeatExit();
+        emit updateGridList();
+    });
+    GlobalData::globalData.clear_threads();
+    GlobalData::globalData.add_threads(printHeatExit);
+    connect(printHeatExit, &QThread::finished, [printHeatExit] {
+        GlobalData::globalData.remove_threads(printHeatExit);
+    });
+    printHeatExit->start();
 }
 
 //void MapManager::updateRoute(double time, int step)

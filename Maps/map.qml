@@ -39,7 +39,7 @@ Rectangle {
                 topLeft: QtPositioning.coordinate(grid.x,grid.y)
                 bottomRight: QtPositioning.coordinate(grid.x+grid.width,grid.y+grid.height)
                 Component.onCompleted: {
-                     map.fitViewportToVisibleMapItems()
+//                     map.fitViewportToVisibleMapItems()
 //                    if(entry==undefined)
 //                        opacity=0.2
                 }
@@ -59,7 +59,7 @@ Rectangle {
                 topLeft: QtPositioning.coordinate(grid.x,grid.y)
                 bottomRight: QtPositioning.coordinate(grid.x+grid.width,grid.y+grid.height)
                 Component.onCompleted: {
-                     map.fitViewportToVisibleMapItems()
+//                     map.fitViewportToVisibleMapItems()
 //                    if(entry==undefined)
 //                        opacity=0.2
                 }
@@ -265,7 +265,8 @@ Rectangle {
                         mapEntryModel.append(gridList[i])
                     }
                 }
-                map.fitViewportToVisibleMapItems()
+//                map.fitViewportToVisibleMapItems()
+                map.zoomLevel=10
             }
 
             onUpdateHeatExit: {
@@ -277,7 +278,8 @@ Rectangle {
                         mapExitModel.append(gridList[i])
                     }
                 }
-                map.fitViewportToVisibleMapItems()
+//                map.fitViewportToVisibleMapItems()
+                map.zoomLevel=10
             }
 
             onUpdateCoordinateList: {
