@@ -266,7 +266,7 @@ Rectangle {
                     }
                 }
 //                map.fitViewportToVisibleMapItems()
-                map.zoomLevel=10
+                map.zoomLevel=10.5
             }
 
             onUpdateHeatExit: {
@@ -279,7 +279,7 @@ Rectangle {
                     }
                 }
 //                map.fitViewportToVisibleMapItems()
-                map.zoomLevel=10
+                map.zoomLevel=10.5
             }
 
             onUpdateCoordinateList: {

@@ -37,5 +37,10 @@ public:
     void remove_threads(QThread *thread);
     bool isEmpty_threads();
     void add_threads(QThread *thread);
+    void statusText(QString status);
+    void statusProgress(int progress);
+signals:
+    void sendStatusText(QString status);
+    void sendStatusProgress(int progress);
 };
 #endif // GLOBALDATA_H

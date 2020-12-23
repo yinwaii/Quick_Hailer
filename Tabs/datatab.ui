@@ -162,13 +162,6 @@
        <string>Demand Pattern</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_5">
-       <item row="0" column="2">
-        <widget class="Line" name="lineDemand">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-        </widget>
-       </item>
        <item row="0" column="0">
         <layout class="QGridLayout" name="gridLayout">
          <item row="1" column="0">
@@ -212,18 +205,13 @@
         </layout>
        </item>
        <item row="0" column="3">
-        <widget class="QWidget" name="widget" native="true">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
+        <layout class="QGridLayout" name="containerDemandTime"/>
+       </item>
+       <item row="0" column="2">
+        <widget class="Line" name="lineDemand">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
          </property>
-         <layout class="QGridLayout" name="gridLayout_2">
-          <item row="0" column="0">
-           <layout class="QGridLayout" name="containerDemandTime"/>
-          </item>
-         </layout>
         </widget>
        </item>
       </layout>

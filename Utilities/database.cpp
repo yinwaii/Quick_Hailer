@@ -281,7 +281,22 @@ QVariantList DataBase::searchDemand(int start, int end, int step, QList<int> gri
         stepMap["exit"] = 0;
         result.push_back(stepMap);
     }
+    int querySize = 0;
+    if (query.last()) {
+        querySize = query.at() + 1;
+        query.first();
+        query.previous();
+    }
+    int progress = 0;
     while (query.next()) {
+        int new_progress = floor(double(query.at() * 100) / double(querySize));
+        if (new_progress > progress) {
+            progress = new_progress;
+            GlobalData::globalData.statusText(
+                QString("Demand Chart: filtering the data %1\% ...").arg(progress));
+            GlobalData::globalData.statusProgress(progress);
+        }
+        //        qDebug() << query.at() << querySize;
         int gridIndex
             = GlobalData::get_grid(10,
                                    query.value(query.record().indexOf("orig_lng")).toDouble(),
@@ -313,6 +328,7 @@ QVariantList DataBase::searchDemand(int start, int end, int step, QList<int> gri
             = old_exit_map;
     }
     //    qDebug() << "result:" << result;
+    GlobalData::globalData.statusProgress(0);
     db.close();
     remove();
     return result;
@@ -338,7 +354,21 @@ QVariantList DataBase::searchDistribution(int start, int end, int time_max, doub
         stepMap["fee"] = 0;
         result.push_back(stepMap);
     }
+    int querySize = 0;
+    if (query.last()) {
+        querySize = query.at() + 1;
+        query.first();
+        query.previous();
+    }
+    int progress = 0;
     while (query.next()) {
+        int new_progress = floor(double(query.at() * 100) / double(querySize));
+        if (new_progress > progress) {
+            progress = new_progress;
+            GlobalData::globalData.statusText(
+                QString("Distribution Chart: filtering the data %1\% ...").arg(progress));
+            GlobalData::globalData.statusProgress(progress);
+        }
         if (GlobalData::get_step(step,
                                  query.value(query.record().indexOf("time")).toDouble(),
                                  0,
@@ -380,6 +410,7 @@ QVariantList DataBase::searchDistribution(int start, int end, int time_max, doub
                 = old_fee_map;
         }
     }
+    GlobalData::globalData.statusProgress(0);
     //    qDebug() << "result:" << result;
     db.close();
     remove();
@@ -405,7 +436,21 @@ QVariantList DataBase::searchRevenue(int start, int end, int step)
         stepMap["fee"] = 0;
         result.push_back(stepMap);
     }
+    int querySize = 0;
+    if (query.last()) {
+        querySize = query.at() + 1;
+        query.first();
+        query.previous();
+    }
+    int progress = 0;
     while (query.next()) {
+        int new_progress = floor(double(query.at() * 100) / double(querySize));
+        if (new_progress > progress) {
+            progress = new_progress;
+            GlobalData::globalData.statusText(
+                QString("Revenue Chart: filtering the data %1\% ...").arg(progress));
+            GlobalData::globalData.statusProgress(progress);
+        }
         QVariantMap old_fee_map
             = result[GlobalData::get_step(step,
                                           query.value(query.record().indexOf("end_time")).toDouble(),
@@ -418,6 +463,7 @@ QVariantList DataBase::searchRevenue(int start, int end, int step)
             step, query.value(query.record().indexOf("end_time")).toDouble(), start, end)]
             = old_fee_map;
     }
+    GlobalData::globalData.statusProgress(0);
     //    qDebug() << "result:" << result;
     db.close();
     remove();
@@ -499,7 +545,8 @@ QVariantList DataBase::getEntryExit(double start, double end, int step)
 {
     QSqlDatabase db = get("entryExit");
     //    int maxEntry = -1, maxExit = -1;
-    emit statusText("Opening the database to get entry & exit...");
+    //    emit statusText("Opening the database to get entry & exit...");
+    GlobalData::globalData.statusText("Thermal Map: Opening the database to get entry & exit...");
     if (!db.open()) {
         QMessageBox::warning(nullptr, "warning", "Can't create the database! ");
         assert(0);
@@ -525,8 +572,22 @@ QVariantList DataBase::getEntryExit(double start, double end, int step)
               .arg(int(start))
               .arg(int(end));
     QSqlQuery query(commandEntry, db);
-    //    qDebug() << commandEntry;
+    int querySizeEntry = 0;
+    if (query.last()) {
+        querySizeEntry = query.at() + 1;
+        query.first();
+        query.previous();
+    }
+    int progressEntry = 0;
     while (query.next()) {
+        int new_progress = floor(double(query.at() * 100) / double(querySizeEntry));
+        if (new_progress > progressEntry) {
+            progressEntry = new_progress;
+            GlobalData::globalData.statusText(
+                QString("Thermal Map: filtering the entry data %1\% ...").arg(progressEntry));
+            GlobalData::globalData.statusProgress(progressEntry);
+        }
+        //    qDebug() << commandEntry;
         int entryIndex = GlobalData::globalData
                              .get_grid(step,
                                        query.value(query.record().indexOf("orig_lng")).toDouble(),
@@ -545,12 +606,27 @@ QVariantList DataBase::getEntryExit(double start, double end, int step)
         //        if (maxEntry == -1 || entryMap["entry"].toInt() > maxEntry)
         //            maxEntry = entryMap["entry"].toInt();
     }
+    GlobalData::globalData.statusProgress(0);
     QString commandExit = QString("SELECT * FROM dataset WHERE end_time >= %1 AND end_time <= %2")
                               .arg(int(start))
                               .arg(int(end));
     query.exec(commandExit);
     //    qDebug() << commandExit;
+    int querySizeExit = 0;
+    if (query.last()) {
+        querySizeExit = query.at() + 1;
+        query.first();
+        query.previous();
+    }
+    int progressExit = 0;
     while (query.next()) {
+        int new_progressExit = floor(double(query.at() * 100) / double(querySizeExit));
+        if (new_progressExit > progressExit) {
+            progressExit = new_progressExit;
+            GlobalData::globalData.statusText(
+                QString("Thermal Map: filtering the exit data %1\% ...").arg(progressExit));
+            GlobalData::globalData.statusProgress(progressExit);
+        }
         int exitIndex = GlobalData::globalData
                             .get_grid(step,
                                       query.value(query.record().indexOf("dest_lng")).toDouble(),
@@ -569,6 +645,7 @@ QVariantList DataBase::getEntryExit(double start, double end, int step)
         //        if (maxExit == -1 || exitMap["exit"].toInt() > maxExit)
         //            maxExit = exitMap["exit"].toInt();
     }
+    GlobalData::globalData.statusProgress(0);
     //    qDebug() << entryExitMap;
     int entryMax = 0, exitMax = 0;
     foreach (int index, entryExitMap.keys()) {
@@ -577,6 +654,7 @@ QVariantList DataBase::getEntryExit(double start, double end, int step)
         if (entryExitMap[index].second > exitMax)
             exitMax = entryExitMap[index].second;
     }
+    GlobalData::globalData.statusText("Thermal Map: Pushing the data ...");
     foreach (int index, entryExitMap.keys()) {
         QVariantMap tmp;
         QPointF topLeft = {GlobalData::globalData.get_edge_lat(step, index / step + 1),
@@ -608,7 +686,8 @@ QVariantList DataBase::getEntryExit(double start, double end, int step)
 QVariantList DataBase::getRoute(double time, int step)
 {
     QSqlDatabase db = get("route");
-    emit statusText("Opening the database to get route...");
+    //    emit statusText("Opening the database to get route...");
+    GlobalData::globalData.statusText("Flow Map: Opening the database to get route ...");
     if (!db.open()) {
         QMessageBox::warning(nullptr, "warning", "Can't create the database! ");
         assert(0);
@@ -620,7 +699,21 @@ QVariantList DataBase::getRoute(double time, int step)
                                .arg(time);
     QSqlQuery query(commandRoute, db);
     QMap<QPair<int, int>, int> routeMap;
+    int querySize = 0;
+    if (query.last()) {
+        querySize = query.at() + 1;
+        query.first();
+        query.previous();
+    }
+    int progress = 0;
     while (query.next()) {
+        int new_progress = floor(double(query.at() * 100) / double(querySize));
+        if (new_progress > progress) {
+            progress = new_progress;
+            GlobalData::globalData.statusText(
+                QString("Flow Map: filtering the data %1\% ...").arg(progress));
+            GlobalData::globalData.statusProgress(progress);
+        }
         QGeoCoordinate origin = {query.value(query.record().indexOf("orig_lat")).toDouble(),
                                  query.value(query.record().indexOf("orig_lng")).toDouble()};
         QGeoCoordinate destination = {query.value(query.record().indexOf("dest_lat")).toDouble(),
@@ -636,11 +729,13 @@ QVariantList DataBase::getRoute(double time, int step)
         //        tmp["destination"] = QVariant::fromValue(destination);
         //        result.push_back(tmp);
     }
+    GlobalData::globalData.statusProgress(0);
     int routeMax = 0;
     foreach (int routeCount, routeMap.values()) {
         if (routeCount > routeMax)
             routeMax = routeCount;
     }
+    GlobalData::globalData.statusText("Flow Map: Pushing the data ...");
     foreach (auto routePoint, routeMap.keys()) {
         QVariantMap tmp;
         tmp["origin"] = QVariant::fromValue(
@@ -660,6 +755,7 @@ QVariantList DataBase::getRelateTime(QGeoCoordinate origin, QGeoCoordinate desti
 {
     QSqlDatabase db = get("relateTime");
     emit statusText("Opening the database to predict routes...");
+    GlobalData::globalData.statusText("Time Prediction: Opening the database to predict time ...");
     if (!db.open()) {
         QMessageBox::warning(nullptr, "warning", "Can't create the database! ");
         assert(0);
@@ -678,7 +774,20 @@ QVariantList DataBase::getRelateTime(QGeoCoordinate origin, QGeoCoordinate desti
                                .arg(destination.longitude() + delta);
     //    qDebug() << commandRoute;
     QSqlQuery query(commandRoute, db);
+    int querySize = 0;
+    if (query.last()) {
+        querySize = query.at() + 1;
+        query.first();
+        query.previous();
+    }
+    int progress = 0;
     while (query.next()) {
+        int new_progress = floor(double(query.at() * 100) / double(querySize));
+        if (new_progress > progress) {
+            progress = new_progress;
+            GlobalData::globalData.statusText(
+                QString("Time Prediction: filtering the data %1\% ...").arg(progress));
+        }
         QVariantMap tmp;
         QGeoCoordinate origin = {query.value(query.record().indexOf("orig_lat")).toDouble(),
                                  query.value(query.record().indexOf("orig_lng")).toDouble()};
@@ -700,6 +809,8 @@ QVariantList DataBase::getRelateSpace(QGeoCoordinate origin, double time, double
 {
     QSqlDatabase db = get("relateSpace");
     emit statusText("Opening the database to predict space...");
+    GlobalData::globalData.statusText(
+        "Space Prediction: Opening the database to predict space ...");
     if (!db.open()) {
         QMessageBox::warning(nullptr, "warning", "Can't create the database! ");
         assert(0);
@@ -717,7 +828,20 @@ QVariantList DataBase::getRelateSpace(QGeoCoordinate origin, double time, double
                                .arg(time * 60 + 20);
     qDebug() << commandRoute;
     QSqlQuery query(commandRoute, db);
+    int querySize = 0;
+    if (query.last()) {
+        querySize = query.at() + 1;
+        query.first();
+        query.previous();
+    }
+    int progress = 0;
     while (query.next()) {
+        int new_progress = floor(double(query.at() * 100) / double(querySize));
+        if (new_progress > progress) {
+            progress = new_progress;
+            GlobalData::globalData.statusText(
+                QString("Space Prediction: filtering the data %1\% ...").arg(progress));
+        }
         QVariantMap tmp;
         QGeoCoordinate origin = {query.value(query.record().indexOf("orig_lat")).toDouble(),
                                  query.value(query.record().indexOf("orig_lng")).toDouble()};

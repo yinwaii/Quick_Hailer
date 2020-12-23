@@ -11,18 +11,18 @@ ChartManager::ChartManager(QGridLayout *ctn, QString ttl, QObject *parent)
 }
 void ChartManager::load()
 {
-    qDebug() << "Start to load the chart ...";
-    qDebug() << "Clear the old data ...";
+    GlobalData::globalData.statusText("Start to load the chart ...");
+    GlobalData::globalData.statusText("Clear the old data ...");
     if (container->widget() != NULL) {
         container->removeWidget(container->widget());
         delete chart;
         delete chartView;
     }
-    qDebug() << "Recreate the data ...";
+    GlobalData::globalData.statusText("Recreate the data ...");
     series->reset(seriesConfig);
     //    foreach (QPointF p, series->getSeries(series->fieldList()[0])->points())
     //        qDebug() << QDateTime::fromTime_t(p.x());
-    qDebug() << "Setting the axes ...";
+    GlobalData::globalData.statusText("Setting the axes ...");
     chart = new QChart;
     axisX->addAxis(chart);
     axisY->addAxis(chart);
@@ -44,7 +44,7 @@ void ChartManager::load()
         foreach (QString str, otherAxisSeries[field])
             otherAxis[field]->attachSeries(series->getSeries(str));
     }
-    qDebug() << "Loading the chart ...";
+    GlobalData::globalData.statusText("Loading the chart ...");
     if (!title.isNull())
         chart->setTitle(title);
     chartView = new QChartView(chart);
@@ -53,20 +53,19 @@ void ChartManager::load()
     chartView->chart()->setAnimationOptions(animation);
     chartView->chart()->setAnimationEasingCurve(QEasingCurve::OutExpo);
     chartView->chart()->setAnimationDuration(500);
-    qDebug() << "Setting the chartView ...";
+    GlobalData::globalData.statusText("Setting the chartView ...");
     QSizePolicy policy = chartView->sizePolicy();
     policy.setVerticalPolicy(QSizePolicy::Expanding);
     policy.setHorizontalPolicy(QSizePolicy::Expanding);
     chartView->setSizePolicy(policy);
     chartView->setRenderHint(QPainter::Antialiasing);
     container->addWidget(chartView, 0, 0);
-    qDebug() << "Loading finished ...";
+    GlobalData::globalData.statusText("Loading finished ...");
 }
 
 void ChartManager::show()
 {
-    qDebug() << "Start to load the chart ...";
-    qDebug() << "Clear the old data ...";
+    GlobalData::globalData.statusText("Start to load the chart ...");
     if (container->widget() != NULL) {
         container->removeWidget(container->widget());
         delete chartView;
@@ -78,7 +77,7 @@ void ChartManager::show()
     chartView->chart()->setAnimationEasingCurve(QEasingCurve::OutExpo);
     chartView->chart()->setAnimationDuration(500);
     container->addWidget(chartView, 0, 0);
-    qDebug() << "Loading finished ...";
+    GlobalData::globalData.statusText("Showing finished ...");
 }
 
 void ChartManager::initAxisX(AxisManager::AxisType type, Qt::Alignment alignment,

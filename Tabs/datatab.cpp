@@ -17,6 +17,7 @@ DataTab::~DataTab()
 
 void DataTab::printDemandTime()
 {
+    GlobalData::globalData.statusText("Demand chart: Initing the settings ...");
     chartDemandTime = new ChartManager(ui->containerDemandTime);
     chartDemandTime->addSeriesId("DateTime", {"Entry", "Exit", "Flow"});
     chartDemandTime->initAxisX(AxisManager::AxisType::DataTime,
@@ -24,6 +25,7 @@ void DataTab::printDemandTime()
                                AxisManager::internal_date);
     chartDemandTime->addAxis("Flow", AxisManager::AxisType::Value, Qt::AlignRight);
     //    QList<QPointF> pointsDemandTime;
+    GlobalData::globalData.statusText("Demand chart: Preparing the data ...");
     QThread *printDemandChart = QThread::create([this] {
         int timeStart = ui->editDataTimeFrom->dateTime().toTime_t();
         int timeStop = ui->editDataTimeTo->dateTime().toTime_t();
@@ -31,8 +33,9 @@ void DataTab::printDemandTime()
                                                                   timeStop,
                                                                   ui->spinDataStep->value(),
                                                                   managerGrid->gridSelected());
-        qDebug() << dataDemand;
+        //        qDebug() << dataDemand;
         //    DataBase::dataBase.searchNum("SELECT * FROM dataset");
+        GlobalData::globalData.statusText("Demand chart: Loading the data to cache ...");
         for (int step = 0; step < ui->spinDataStep->value(); step++) {
             int stepStart = timeStart + (timeStop - timeStart) * step / ui->spinDataStep->value();
             int stepStop = timeStart
@@ -63,6 +66,7 @@ void DataTab::printDemandTime()
 
 void DataTab::printDistribution()
 {
+    GlobalData::globalData.statusText("Distribution chart: Initing the settings ...");
     chartDistribution = new ChartManager(ui->containerDistributionTime);
     chartDistribution->addSeriesId("Time", {"Travel Time Distribution", "Travel Time Accumulation"});
     chartDistribution->addSeriesId("Fee", {"Order Fees Distribution", "Order Fees Accumulation"});
@@ -76,12 +80,15 @@ void DataTab::printDistribution()
                                {"Order Fees Distribution", "Order Fees Accumulation"});
     chartDistribution->getAxisX()->setTickCount(12);
     chartDistribution->getOtherAxis("Fee")->setTickCount(12);
+    GlobalData::globalData.statusText("Distribution chart: Preparing the data ...");
     QThread *printDistributionChart = QThread::create([this] {
+        GlobalData::globalData.statusText("Distribution chart: Getting the whole num ...");
         int wholenum = DataBase::dataBase.searchNum(
             QString("SELECT * From dataset WHERE "
                     "departure_time>%1 AND end_time<%2")
                 .arg(ui->editDataTimeFrom->dateTime().toTime_t())
                 .arg(ui->editDataTimeTo->dateTime().toTime_t()));
+        GlobalData::globalData.statusText("Distribution chart: Getting the max time ...");
         double maxTime = double(
             DataBase::dataBase
                 .searchTarget(QString("SELECT MAX(time) As Target From dataset WHERE "
@@ -89,6 +96,7 @@ void DataTab::printDistribution()
                                   .arg(ui->editDataTimeFrom->dateTime().toTime_t())
                                   .arg(ui->editDataTimeTo->dateTime().toTime_t()))
                 .toInt());
+        GlobalData::globalData.statusText("Distribution chart: Getting the max fee ...");
         double maxFee = double(
             DataBase::dataBase
                 .searchTarget(QString("SELECT MAX(fee) As Target From dataset WHERE "
@@ -105,7 +113,8 @@ void DataTab::printDistribution()
                                                     maxTime,
                                                     maxFee,
                                                     changedstep);
-        qDebug() << dataDistribution;
+        //        qDebug() << dataDistribution;
+        GlobalData::globalData.statusText("Distribution chart: Loading the data to cache ...");
         for (int step = 0; step < changedstep; step++) {
             double timeStart = maxTime * double(step) / changedstep;
             double timeStop = maxTime * double(step + 1) / changedstep;
@@ -142,7 +151,7 @@ void DataTab::printDistribution()
                                                      {double(numberFee) / wholenum * 100,
                                                       double(feeCount) / wholenum * 100});
             if ((double(timeCount) / wholenum * 100) > 99
-                || (double(feeCount) / wholenum * 100) > 99) {
+                && (double(feeCount) / wholenum * 100) > 99) {
                 break;
             }
         }
@@ -160,17 +169,20 @@ void DataTab::printDistribution()
 
 void DataTab::printRevenue()
 {
+    GlobalData::globalData.statusText("Revenue chart: Initing the settings ...");
     chartRevenue = new ChartManager(ui->containerRevenue);
     chartRevenue->addSeriesId("DateTime", {"Revenue"});
     chartRevenue->initAxisX(AxisManager::AxisType::DataTime,
                             Qt::AlignBottom,
                             AxisManager::internal_date);
+    GlobalData::globalData.statusText("Revenue chart: Preparing the settings ...");
     QThread *printRevenueChart = QThread::create([this] {
         int timeStart = ui->editDataTimeFrom->dateTime().toTime_t();
         int timeStop = ui->editDataTimeTo->dateTime().toTime_t();
         QVariantList dataRevenue = DataBase::dataBase.searchRevenue(timeStart,
                                                                     timeStop,
                                                                     ui->spinDataStep->value());
+        GlobalData::globalData.statusText("Revenue chart: Loading the data to cache ...");
         for (int step = 0; step < ui->spinDataStep->value(); step++) {
             int stepStart = timeStart + (timeStop - timeStart) * step / ui->spinDataStep->value();
             int stepStop = timeStart
@@ -193,6 +205,7 @@ void DataTab::printRevenue()
 void DataTab::updatePlots()
 {
     if (GlobalData::globalData.isEmpty_threads()) {
+        GlobalData::globalData.statusText("Update the plots ...");
         managerGrid->initGrids();
         qDebug() << managerGrid->gridList();
         GlobalData::globalData.clear_threads();
@@ -230,18 +243,22 @@ void DataTab::updatePlots()
 
 void DataTab::on_pushButton_2_clicked()
 {
-    if (GlobalData::globalData.isEmpty_threads())
+    if (GlobalData::globalData.isEmpty_threads()) {
+        GlobalData::globalData.statusText("Update the demand plot ...");
         printDemandTime();
+    }
 }
 
 void DataTab::on_pushButton_clicked()
 {
+    GlobalData::globalData.statusText("SetFull / Clear ...");
     managerGrid->setFullGrid();
     managerGrid->initGrids();
 }
 
 void DataTab::on_widgetData_currentChanged(int index)
 {
+    GlobalData::globalData.statusText("Changing the tab to " + QString("%1").arg(index) + " ...");
     if (GlobalData::globalData.isEmpty_threads()) {
         switch (index) {
         case 0:

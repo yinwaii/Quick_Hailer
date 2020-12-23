@@ -3,6 +3,7 @@
 
 #include "Managers/axismanager.h"
 #include "Managers/seriesmanager.h"
+#include "Utilities/globaldata.h"
 #include <QEasingCurve>
 #include <QGridLayout>
 #include <QMessageBox>

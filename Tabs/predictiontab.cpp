@@ -47,6 +47,7 @@ PredictionTab::~PredictionTab()
 
 void PredictionTab::loadRouteIdeas(QVariantList ideaList)
 {
+    GlobalData::globalData.statusText("Loading the route ideas ...");
     qDebug() << ideaList;
     ui->listRouteIdea->clear();
     int averageTime = 0;
@@ -68,6 +69,7 @@ void PredictionTab::loadRouteIdeas(QVariantList ideaList)
 
 void PredictionTab::loadSpaceIdeas(QVariantList ideaList)
 {
+    GlobalData::globalData.statusText("Loading the space ideas ...");
     qDebug() << ideaList;
     ui->listSpaceIdea->clear();
     for (int i = 0; i < ideaList.count(); i++) {

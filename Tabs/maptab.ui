@@ -200,6 +200,12 @@
         <layout class="QVBoxLayout" name="verticalLayout">
          <item>
           <widget class="QQuickWidget" name="plotThermalOrigin">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="resizeMode">
             <enum>QQuickWidget::SizeRootObjectToView</enum>
            </property>
@@ -223,6 +229,12 @@
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
           <widget class="QQuickWidget" name="plotThernalDestination">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="resizeMode">
             <enum>QQuickWidget::SizeRootObjectToView</enum>
            </property>

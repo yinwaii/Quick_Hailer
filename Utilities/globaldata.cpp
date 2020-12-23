@@ -104,3 +104,13 @@ void GlobalData::remove_threads(QThread *thread)
         threads.removeOne(thread);
     qDebug() << "after remove" << threads;
 }
+
+void GlobalData::statusText(QString status)
+{
+    emit sendStatusText(status);
+}
+
+void GlobalData::statusProgress(int progress)
+{
+    emit sendStatusProgress(progress);
+}

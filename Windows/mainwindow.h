@@ -19,8 +19,12 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void open_the_mainWindow();
+public slots:
+    void setStatusBar(QString status);
+    void setStatusProgress(int progress);
 
 private:
     Ui::MainWindow *ui;
+    QProgressBar *progressBar;
 };
 #endif // MAINWINDOW_H

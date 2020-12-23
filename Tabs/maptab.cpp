@@ -27,10 +27,12 @@ void MapTab::loadMap()
     //    qDebug() << lis;
     //    emit
     //    managerThermalOrigin->initGrids();
+    GlobalData::globalData.statusText("Setting the ranges ...");
     setThermalRange();
     setFlowRange();
     switch (ui->widgetMap->currentIndex()) {
     case 0:
+        GlobalData::globalData.statusText("Loading the thermal map ...");
         if (ui->radioThermalMoment->isChecked()) {
             managerThermalOrigin->updateHeatEntry(ui->sliderThermalTimeLine->value() - 3 * 60,
                                                   ui->sliderThermalTimeLine->value() + 3 * 60,
@@ -52,6 +54,7 @@ void MapTab::loadMap()
         }
         break;
     case 1:
+        GlobalData::globalData.statusText("Loading the flow map ...");
         managerFlow->updateRoute(ui->sliderFlowTimeLine->value(), ui->spinFlowStep->value());
         break;
     }
@@ -69,6 +72,7 @@ void MapTab::loadMap()
 
 void MapTab::loadManeuver(QList<QGeoManeuver> maneuverList)
 {
+    GlobalData::globalData.statusText("Loading the maneuver ...");
     ui->listRoute->clear();
     foreach (QGeoManeuver maneuver, maneuverList) {
         ui->listRoute->addItem(maneuver.instructionText());
@@ -79,6 +83,7 @@ void MapTab::loadManeuver(QList<QGeoManeuver> maneuverList)
             ui->listRoute->addItem(instruction);
         }
     }
+    GlobalData::globalData.statusText("Route Planning: planning finished ...");
 }
 
 void MapTab::setThermalRange()
@@ -120,6 +125,7 @@ MapTab::~MapTab()
 
 void MapTab::on_radioThermalOverall_clicked()
 {
+    GlobalData::globalData.statusText("Overall chosen ...");
     ui->spinThermalStepTime->setEnabled(false);
     ui->sliderThermalTimeLine->setEnabled(false);
     ui->labelThermalTimeLine->setEnabled(false);
@@ -129,6 +135,7 @@ void MapTab::on_radioThermalOverall_clicked()
 
 void MapTab::on_radioThermalMoment_clicked()
 {
+    GlobalData::globalData.statusText("Moment chosen ...");
     ui->spinThermalStepTime->setEnabled(true);
     ui->sliderThermalTimeLine->setEnabled(true);
     ui->labelThermalTimeLine->setEnabled(true);

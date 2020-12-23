@@ -44,7 +44,7 @@ private:
     QMap<QString, QCheckBox *> checkFields;
     QVBoxLayout layoutFields;
     QStringList requiredFields
-        = {"departure_time", "end_time", "orig_lng", "orig_lat", "dest_lng", "dest_lat"};
+        = {"departure_time", "end_time", "orig_lng", "orig_lat", "dest_lng", "dest_lat", "fee"};
     QMap<QString, QCheckBox *> checkDates;
     QVBoxLayout layoutDates;
 };

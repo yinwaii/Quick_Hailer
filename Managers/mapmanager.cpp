@@ -82,6 +82,7 @@ void MapManager::setSelectStatus(const int &status)
 
 void MapManager::initGrids()
 {
+    GlobalData::globalData.statusText("Initialize the grids ...");
     m_gridList = DataBase::dataBase.getGrid();
     foreach (int index, m_gridSelected) {
         QVariantMap tmpMap = m_gridList[index].toMap();
@@ -98,6 +99,7 @@ void MapManager::updateHeatEntry(double start, double end, int step)
         m_gridList = DataBase::dataBase.getEntryExit(start, end, step);
         emit updateHeatEntry();
         emit updateGridList();
+        GlobalData::globalData.statusText("Thermal Map: Entry part loading finished ...");
     });
     GlobalData::globalData.clear_threads();
     GlobalData::globalData.add_threads(printHeatEntry);
@@ -113,6 +115,7 @@ void MapManager::updateHeatExit(double start, double end, int step)
         m_gridList = DataBase::dataBase.getEntryExit(start, end, step);
         emit updateHeatExit();
         emit updateGridList();
+        GlobalData::globalData.statusText("Thermal Map: Exit part loading finished ...");
     });
     GlobalData::globalData.clear_threads();
     GlobalData::globalData.add_threads(printHeatExit);
@@ -130,6 +133,7 @@ void MapManager::updateHeatExit(double start, double end, int step)
 
 void MapManager::selectFrom()
 {
+    GlobalData::globalData.statusText(QString("Please select the origin point ..."));
     m_selectStatus = 1;
     qDebug() << "From";
     emit updateSelectStatus();
@@ -137,6 +141,7 @@ void MapManager::selectFrom()
 
 void MapManager::selectTo()
 {
+    GlobalData::globalData.statusText(QString("Please select the destination point ..."));
     m_selectStatus = 2;
     qDebug() << "To";
     emit updateSelectStatus();
@@ -153,6 +158,7 @@ void MapManager::selectedPlanning()
 {
     m_coordinateList.clear();
     QVariantMap tmp;
+    GlobalData::globalData.statusText("Route Planning: route message received ...");
     for (int i = 1; i < rm.getPath().length(); i++) {
         tmp["origin"] = QVariant::fromValue(rm.getPath()[i - 1]);
         tmp["destination"] = QVariant::fromValue(rm.getPath()[i]);
@@ -166,10 +172,19 @@ void MapManager::selectedPlanning()
 }
 void MapManager::updateRoute(double time, int step)
 {
-    m_coordinateList.clear();
-    m_coordinateList = DataBase::dataBase.getRoute(time, step);
-    qDebug() << m_coordinateList;
-    emit updateCoordinateList();
+    QThread *printRoute = QThread::create([this, time, step] {
+        m_coordinateList.clear();
+        m_coordinateList = DataBase::dataBase.getRoute(time, step);
+        qDebug() << m_coordinateList;
+        emit updateCoordinateList();
+        GlobalData::globalData.statusText("Flow Map: Loading finished ...");
+    });
+    GlobalData::globalData.clear_threads();
+    GlobalData::globalData.add_threads(printRoute);
+    connect(printRoute, &QThread::finished, [printRoute] {
+        GlobalData::globalData.remove_threads(printRoute);
+    });
+    printRoute->start();
     //    routeCount = routes.length();
     //    foreach (QVariant route, routes) {
     //        rm.setRoute(route.toMap()["origin"].value<QGeoCoordinate>(),
@@ -199,29 +214,32 @@ void MapManager::predictRoute()
 {
     double delta = 0.005;
     m_coordinateList = DataBase::dataBase.getRelateTime(coordinateFrom(), coordinateTo());
-    while (m_coordinateList.isEmpty()) {
+    while (m_coordinateList.isEmpty() && delta < 1) {
         delta += 0.005;
         m_coordinateList = DataBase::dataBase.getRelateTime(coordinateFrom(), coordinateTo(), delta);
     }
     emit updateDots();
     emit updateRouteIdeas(m_coordinateList);
-    qDebug() << "updated";
+    GlobalData::globalData.statusText("Route Prediction: Prediction finished ...");
+    //    qDebug() << "updated";
 }
 
 void MapManager::predictSpace(int time)
 {
     double delta = 0.005;
     m_coordinateList = DataBase::dataBase.getRelateSpace(coordinateFrom(), time);
-    while (m_coordinateList.isEmpty()) {
+    while (m_coordinateList.isEmpty() && delta < 1) {
         delta += 0.005;
         m_coordinateList = DataBase::dataBase.getRelateSpace(coordinateFrom(), time, delta);
     }
     emit updateDots();
     emit updateSpaceIdeas(m_coordinateList);
+    GlobalData::globalData.statusText("Space Prediction: Prediction finished ...");
 }
 
 void MapManager::addGrid(int grid)
 {
+    GlobalData::globalData.statusText(QString("Grid added: %1 ...").arg(grid));
     m_gridSelected.push_back(grid);
     qDebug() << m_gridSelected;
     emit updateDemandPlot();
@@ -229,6 +247,7 @@ void MapManager::addGrid(int grid)
 
 void MapManager::deleteGrid(int grid)
 {
+    GlobalData::globalData.statusText(QString("Grid deleted: %1 ...").arg(grid));
     m_gridSelected.removeAt(m_gridSelected.indexOf(grid));
     qDebug() << m_gridSelected;
     emit updateDemandPlot();
@@ -252,10 +271,12 @@ void MapManager::setFullGrid()
 
 void MapManager::getOriginAddress()
 {
+    GlobalData::globalData.statusText(QString("Origin address selected ..."));
     emit updateOrigin(rm.getAddress());
 }
 
 void MapManager::getDestinationAddress()
 {
+    GlobalData::globalData.statusText(QString("Destination address selected ..."));
     emit updateDestination(rm.getAddress());
 }
