@@ -72,8 +72,5 @@ Thumbs.db
 *.exe
 
 Presentation/pre.mp4
-Presentation/pre.screenflow/Media/Recording-2020-12-26-235416_{E431A879-06C9-493C-988A-2A1C891E62AA}.scc
-Presentation/pre.screenflow/ScreenFlowDocument.dat
-Presentation/pre.screenflow/thumbnail.jpg
-Presentation/pre.screenflow/version.plist
+Presentation/pre.screenflow
 *.zip
