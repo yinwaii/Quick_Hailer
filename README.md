@@ -9,6 +9,8 @@ A Smooth, Graceful and MultiFunctional APP for Analysis and Visualization of Onl
 3. Build the project
 4. Run ../build-Quick_Hailer-Desktop_Qt_5_12_9_clang_64bit-Release/Quick_Hailer.app
 
+Data Download: <https://jbox.sjtu.edu.cn/v/link/view/f1345febe7934badb13b0ea098bf5264>
+
 Now Quick-Hailer has only been tested on Mac OS 10.15, but in principle it can also work on Windows and Linux.
 
 ## Quick Start
